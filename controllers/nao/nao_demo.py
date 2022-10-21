@@ -17,7 +17,6 @@
    This demonstrates how to access sensors and actuators"""
 
 from controller import Robot, Keyboard, Motion
-import pandas
 
 
 class Nao(Robot):
