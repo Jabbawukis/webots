@@ -46,7 +46,8 @@ velocity = 0.7 * maxMotorVelocity
 
 isRotating = False
 while robot.step(timeStep) != -1:
-
+    print(centralSensor.getValue())
+    print(outerLeftSensor.getValue())
     current_time = robot.getTime()
     if current_time > init_time + 1.0:
         print(int(current_time))
