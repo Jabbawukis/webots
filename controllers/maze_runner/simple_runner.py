@@ -157,7 +157,7 @@ class MazeRunner(Robot):
             return "right"
         elif "right" in smallest_distance:
             return "left"
-        elif "central" in smallest_distance and len(self.collisions_detected.keys()) == 1:
+        elif "central" in smallest_distance:
             return "right"
 
 
@@ -165,7 +165,7 @@ maze_runner = MazeRunner()
 maze_runner.robot_go()
 while maze_runner.step(maze_runner.timeStep) != -1:
     maze_runner.get_and_print_distance_sensor_data(print_data=False)
-    maze_runner.get_and_print_ground_sensor_data()
+    maze_runner.get_and_print_ground_sensor_data(print_data=False)
     if maze_runner.robot_state == "wall_collision_detected" and maze_runner.robot_last_state == "going_forward":
         best_direction = maze_runner.robot_detect_open_space()
         if best_direction == "left":
