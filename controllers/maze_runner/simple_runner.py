@@ -107,9 +107,9 @@ class MazeRunner(Robot):
     def get_and_print_ground_sensor_data(self, print_data=True):
         self.ground_left = self.groundLeftSensor.getValue()
         self.ground_right = self.groundRightSensor.getValue()
-        if self.ground_left > 0.0 and print_data:
+        if self.ground_left <= self.black_circle_threshold and print_data:
             print(f"groundLeftSensor: {self.ground_left}")
-        if self.ground_right > 0.0 and print_data:
+        if self.ground_right <= self.black_circle_threshold and print_data:
             print(f"groundRightSensor: {self.ground_right}")
         if self.ground_left <= self.black_circle_threshold or self.ground_right <= self.black_circle_threshold:
             self.init_time = self.getTime()
@@ -165,7 +165,7 @@ maze_runner = MazeRunner()
 maze_runner.robot_go()
 while maze_runner.step(maze_runner.timeStep) != -1:
     maze_runner.get_and_print_distance_sensor_data(print_data=False)
-    maze_runner.get_and_print_ground_sensor_data(print_data=False)
+    maze_runner.get_and_print_ground_sensor_data(print_data=True)
     if maze_runner.robot_state == "wall_collision_detected" and maze_runner.robot_last_state == "going_forward":
         best_direction = maze_runner.robot_detect_open_space()
         if best_direction == "left":
