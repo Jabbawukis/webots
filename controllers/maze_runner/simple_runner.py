@@ -183,4 +183,3 @@ while maze_runner.step(maze_runner.timeStep) != -1:
         if current_time > maze_runner.init_time + 5.0:
             maze_runner.robot_stop()
             break
-
