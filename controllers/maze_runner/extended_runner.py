@@ -6,19 +6,10 @@ class MazeRunner(Robot):
         super().__init__()
         # Get simulation step length.
         self.timeStep = int(self.getBasicTimeStep())
-
-        self.central = 0.0
-        self.central_left = 0.0
-        self.outer_left = 0.0
-        self.central_right = 0.0
-        self.outer_right = 0.0
+        self.distance_sensor_data = None
         self.wall_collision_threshold = 2500.0
-        self.collisions_detected = None
-        self.wall_collision_detected = False
-        self.last_turn_after_dead_end = ""
 
         self.black_circles_detected = 0
-        self.black_circle_detected = False
         self.init_time = 0.0
 
         self.robot_state = "halting"
@@ -65,52 +56,14 @@ class MazeRunner(Robot):
         self.velocity = 0.7 * self.maxMotorVelocity
 
     def get_and_print_distance_sensor_data(self, print_data=True):
-        collision = {}
-        self.central = self.centralSensor.getValue()
-        self.central_left = self.centralLeftSensor.getValue()
-        self.outer_left = self.outerLeftSensor.getValue()
-        self.central_right = self.centralRightSensor.getValue()
-        self.outer_right = self.outerRightSensor.getValue()
-        if self.central > 0.0:
-            collision["central"] = self.central
-            if print_data:
-                print(f"centralSensor: {self.central}")
-        if self.central_left > 0.0:
-            collision["central_left"] = self.central_left
-            if print_data:
-                print(f"centralLeftSensor: {self.central_left}")
-        if self.outer_left > 0.0:
-            collision["outer_left"] = self.outer_left
-            if print_data:
-                print(f"outerLeftSensor: {self.outer_left}")
-        if self.central_right > 0.0:
-            collision["central_right"] = self.central_right
-            if print_data:
-                print(f"centralRightSensor: {self.central_right}")
-        if self.outer_right > 0.0:
-            collision["outer_right"] = self.outer_right
-            if print_data:
-                print(f"outerRightSensor: {self.outer_right}")
-        if len(collision.keys()) > 0:
-            self.collisions_detected = collision
-            self.wall_collision_detected = True
-
-    def get_and_print_ground_sensor_data(self, print_data=True):
-        self.ground_left = self.groundLeftSensor.getValue()
-        self.ground_right = self.groundRightSensor.getValue()
-        if self.ground_left <= self.black_circle_threshold and print_data:
-            print(f"groundLeftSensor: {self.ground_left}")
-        if self.ground_right <= self.black_circle_threshold and print_data:
-            print(f"groundRightSensor: {self.ground_right}")
-        if self.ground_left <= self.black_circle_threshold or self.ground_right <= self.black_circle_threshold:
-            self.init_time = self.getTime()
-            self.black_circle_detected = True
-        else:
-            current_time = self.getTime()
-            if self.black_circle_detected and current_time > self.init_time + 2.0:
-                self.black_circle_detected = False
-                self.black_circles_detected += 1
-                print(self.black_circles_detected)
+        data = {"central": self.centralSensor.getValue(),
+                "central_left": self.centralLeftSensor.getValue(),
+                "central_right": self.centralRightSensor.getValue(),
+                "outer_left": self.outerLeftSensor.getValue(),
+                "outer_right": self.outerRightSensor.getValue()}
+        self.distance_sensor_data = data
+        if print_data:
+            print(self.distance_sensor_data)
 
     def robot_go(self):
         self.leftMotor.setPosition(float('inf'))
@@ -164,7 +117,7 @@ class MazeRunner(Robot):
             self.robot_previous_state = self.robot_state
             self.robot_state = "going_forward_after_turning"
 
-    def robot_detect_open_space(self):
+    def robot_decide_next_maneuver(self):
         pass
 
 
@@ -172,4 +125,13 @@ maze_runner = MazeRunner()
 maze_runner.robot_go()
 while maze_runner.step(maze_runner.timeStep) != -1:
     maze_runner.get_and_print_distance_sensor_data(print_data=True)
-    maze_runner.get_and_print_ground_sensor_data(print_data=False)
+    next_maneuver = maze_runner.robot_decide_next_maneuver()
+    print(next_maneuver)
+    if next_maneuver == "go_back":
+        maze_runner.robot_back_of()
+    if next_maneuver == "turn_right":
+        maze_runner.robot_turn_right()
+    if next_maneuver == "turn_left":
+        maze_runner.robot_turn_left()
+    if next_maneuver == "go_forward":
+        maze_runner.robot_stop_turning_and_go()
