@@ -7,9 +7,9 @@ class MazeRunner(Robot):
         # Get simulation step length.
         self.timeStep = int(self.getBasicTimeStep())
         self.distance_sensor_data = None
+        self.closest_wall_direction = None
         self.wall_collision_threshold = 2500.0
 
-        self.black_circles_detected = 0
         self.init_time = 0.0
 
         self.robot_state = "halting"
@@ -55,12 +55,19 @@ class MazeRunner(Robot):
         # Set ideal motor velocity.
         self.velocity = 0.7 * self.maxMotorVelocity
 
+    def robot_change_state(self, next_state: str):
+        if self.robot_state != next_state:
+            self.robot_previous_state = self.robot_state
+            self.robot_state = next_state
+
     def get_and_print_distance_sensor_data(self, print_data=True):
         data = {"central": self.centralSensor.getValue(),
                 "central_left": self.centralLeftSensor.getValue(),
                 "central_right": self.centralRightSensor.getValue(),
                 "outer_left": self.outerLeftSensor.getValue(),
                 "outer_right": self.outerRightSensor.getValue()}
+        sorted_data = sorted(data.items(), key=lambda kv: kv[1])
+        self.closest_wall_direction = sorted_data[-1]
         self.distance_sensor_data = data
         if print_data:
             print(self.distance_sensor_data)
@@ -68,32 +75,20 @@ class MazeRunner(Robot):
     def robot_go(self):
         self.leftMotor.setPosition(float('inf'))
         self.rightMotor.setPosition(float('inf'))
-        if self.robot_state != "going_forward":
-            self.robot_previous_state = self.robot_state
-            self.robot_state = "going_forward"
 
     def robot_stop(self):
         self.leftMotor.setPosition(float(0.0))
         self.rightMotor.setPosition(float(0.0))
-        if self.robot_state != "halting":
-            self.robot_previous_state = self.robot_state
-            self.robot_state = "halting"
 
     def robot_back_of(self):
         self.leftMotor.setVelocity(-self.velocity)
         self.rightMotor.setVelocity(-self.velocity)
-        if self.robot_state != "backing_off":
-            self.robot_previous_state = self.robot_state
-            self.robot_state = "backing_off"
 
     def robot_turn_right(self):
         self.leftMotor.setPosition(float(0.0))
         self.rightMotor.setPosition(float(0.0))
         self.leftMotor.setPosition(float('inf'))
         self.rightMotor.setPosition(float('inf'))
-        if self.robot_state != "turning_right":
-            self.robot_previous_state = self.robot_state
-            self.robot_state = "turning_right"
         self.leftMotor.setVelocity(self.velocity)
         self.rightMotor.setVelocity(-self.velocity)
 
@@ -102,9 +97,6 @@ class MazeRunner(Robot):
         self.rightMotor.setPosition(float(0.0))
         self.leftMotor.setPosition(float('inf'))
         self.rightMotor.setPosition(float('inf'))
-        if self.robot_state != "turning_left":
-            self.robot_previous_state = self.robot_state
-            self.robot_state = "turning_left"
         self.leftMotor.setVelocity(-self.velocity)
         self.rightMotor.setVelocity(self.velocity)
 
@@ -113,9 +105,6 @@ class MazeRunner(Robot):
         self.rightMotor.setVelocity(self.velocity)
         self.leftMotor.setPosition(float('inf'))
         self.rightMotor.setPosition(float('inf'))
-        if self.robot_state != "going_forward_after_turning":
-            self.robot_previous_state = self.robot_state
-            self.robot_state = "going_forward_after_turning"
 
     def robot_decide_next_maneuver(self):
         pass
