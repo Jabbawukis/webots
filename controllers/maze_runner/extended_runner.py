@@ -8,7 +8,8 @@ class MazeRunner(Robot):
         self.timeStep = int(self.getBasicTimeStep())
         self.distance_sensor_data = None
         self.closest_wall_direction = None
-        self.wall_collision_threshold = 2500.0
+        self.central_wall_collision_threshold = 2800.0
+        self.outer_wall_collision_threshold = 2500.0
 
         self.init_time = 0.0
 
@@ -67,7 +68,10 @@ class MazeRunner(Robot):
                 "outer_left": self.outerLeftSensor.getValue(),
                 "outer_right": self.outerRightSensor.getValue()}
         sorted_data = sorted(data.items(), key=lambda kv: kv[1])
-        self.closest_wall_direction = sorted_data[-1]
+        if sorted_data[-1][1] > 0.0:
+            self.closest_wall_direction = sorted_data[-1]
+        else:
+            self.closest_wall_direction = None
         self.distance_sensor_data = data
         if print_data:
             print(self.distance_sensor_data)
@@ -106,21 +110,30 @@ class MazeRunner(Robot):
         self.leftMotor.setPosition(float('inf'))
         self.rightMotor.setPosition(float('inf'))
 
+    def robot_u_turn(self, direction: str):
+        if direction == "right":
+            self.leftMotor.setVelocity(self.velocity)
+            self.rightMotor.setVelocity(self.velocity*0.1)
+        elif direction == "left":
+            self.leftMotor.setVelocity(self.velocity*0.1)
+            self.rightMotor.setVelocity(self.velocity)
+
     def robot_decide_next_maneuver(self):
         pass
 
 
 maze_runner = MazeRunner()
-maze_runner.robot_go()
+# maze_runner.robot_go()
 while maze_runner.step(maze_runner.timeStep) != -1:
     maze_runner.get_and_print_distance_sensor_data(print_data=True)
-    next_maneuver = maze_runner.robot_decide_next_maneuver()
-    print(next_maneuver)
-    if next_maneuver == "go_back":
-        maze_runner.robot_back_of()
-    if next_maneuver == "turn_right":
-        maze_runner.robot_turn_right()
-    if next_maneuver == "turn_left":
-        maze_runner.robot_turn_left()
-    if next_maneuver == "go_forward":
-        maze_runner.robot_stop_turning_and_go()
+    print(maze_runner.closest_wall_direction)
+    # next_maneuver = maze_runner.robot_decide_next_maneuver()
+    # print(next_maneuver)
+    # if next_maneuver == "go_back":
+    #     maze_runner.robot_back_of()
+    # if next_maneuver == "turn_right":
+    #     maze_runner.robot_turn_right()
+    # if next_maneuver == "turn_left":
+    #     maze_runner.robot_turn_left()
+    # if next_maneuver == "go_forward":
+    #     maze_runner.robot_stop_turning_and_go()
