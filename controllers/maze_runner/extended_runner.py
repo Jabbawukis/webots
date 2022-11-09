@@ -77,6 +77,7 @@ class MazeRunner(Robot):
         for measure in sorted_data:
             if measure[1][0] > 0.0:
                 self.closest_wall_direction = measure[0]
+                break
         self.distance_sensor_data = data
         if print_data:
             print(self.distance_sensor_data)
