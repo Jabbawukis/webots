@@ -62,16 +62,21 @@ class MazeRunner(Robot):
             self.robot_state = next_state
 
     def get_and_print_distance_sensor_data(self, print_data=True):
-        data = {"central": self.centralSensor.getValue(),
-                "central_left": self.centralLeftSensor.getValue(),
-                "central_right": self.centralRightSensor.getValue(),
-                "outer_left": self.outerLeftSensor.getValue(),
-                "outer_right": self.outerRightSensor.getValue()}
-        sorted_data = sorted(data.items(), key=lambda kv: kv[1])
-        if sorted_data[-1][1] > 0.0:
-            self.closest_wall_direction = sorted_data[-1]
-        else:
-            self.closest_wall_direction = None
+        data = {"central": [self.centralSensor.getValue(), "no_collision"],
+                "central_left": [self.centralLeftSensor.getValue(), "no_collision"],
+                "central_right": [self.centralRightSensor.getValue(), "no_collision"],
+                "outer_left": [self.outerLeftSensor.getValue(), "no_collision"],
+                "outer_right": [self.outerRightSensor.getValue(), "no_collision"]}
+        for key in data.keys():
+            if "central" in key and data[key][0] >= self.central_wall_collision_threshold:
+                data[key][1] = "collision"
+            elif "outer" in key and data[key][0] >= self.outer_wall_collision_threshold:
+                data[key][1] = "collision"
+        sorted_data = sorted(data.items(), key=lambda kv: kv[1], reverse=True)
+        self.closest_wall_direction = None
+        for measure in sorted_data:
+            if measure[1][0] > 0.0:
+                self.closest_wall_direction = measure[0]
         self.distance_sensor_data = data
         if print_data:
             print(self.distance_sensor_data)
