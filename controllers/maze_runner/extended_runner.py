@@ -8,7 +8,7 @@ class MazeRunner(Robot):
         self.timeStep = int(self.getBasicTimeStep())
         self.distance_sensor_data = None
         self.closest_wall_direction = None
-        self.central_wall_collision_threshold = 2800.0
+        self.central_wall_collision_threshold = 2700.0
         self.outer_wall_collision_threshold = 2500.0
 
         self.init_time = 0.0
@@ -115,12 +115,12 @@ class MazeRunner(Robot):
         self.leftMotor.setPosition(float('inf'))
         self.rightMotor.setPosition(float('inf'))
 
-    def robot_u_turn(self, direction: str):
+    def robot_u_turn(self, direction: str, turn_strength: float = 0.6):
         if direction == "right":
             self.leftMotor.setVelocity(self.velocity)
-            self.rightMotor.setVelocity(self.velocity*0.1)
+            self.rightMotor.setVelocity(self.velocity * turn_strength)
         elif direction == "left":
-            self.leftMotor.setVelocity(self.velocity*0.1)
+            self.leftMotor.setVelocity(self.velocity * turn_strength)
             self.rightMotor.setVelocity(self.velocity)
 
     def robot_decide_next_maneuver(self):
@@ -132,6 +132,7 @@ maze_runner = MazeRunner()
 while maze_runner.step(maze_runner.timeStep) != -1:
     maze_runner.get_and_print_distance_sensor_data(print_data=True)
     print(maze_runner.closest_wall_direction)
+    # maze_runner.robot_u_turn("right", 0.6)
     # next_maneuver = maze_runner.robot_decide_next_maneuver()
     # print(next_maneuver)
     # if next_maneuver == "go_back":
