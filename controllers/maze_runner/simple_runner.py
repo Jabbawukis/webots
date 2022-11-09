@@ -13,8 +13,8 @@ class MazeRunner(Robot):
         self.outer_left = 0.0
         self.central_right = 0.0
         self.outer_right = 0.0
-        self.wall_collision_threshold = 3500.0
-        self.side_wall_collision_threshold = 2500.0
+        self.wall_collision_threshold = 2500.0
+        self.side_wall_collision_threshold = 2000.0
         self.collisions_detected = None
         self.black_circles_detected = 0
         self.black_circle_detected = False
@@ -152,13 +152,19 @@ class MazeRunner(Robot):
         self.rightMotor.setVelocity(self.velocity)
 
     def robot_detect_open_space(self):
-        smallest_distance = min(self.collisions_detected, key=self.collisions_detected.get)
-        if "left" in smallest_distance:
+        sorted_data = sorted(self.collisions_detected.items(), key=lambda kv: kv[1], reverse=True)
+        if "left" in sorted_data[0][0]:
             return "right"
-        elif "right" in smallest_distance:
+        elif "right" in sorted_data[0][0]:
             return "left"
-        elif "central" in smallest_distance:
-            return "right"
+        elif "central" == sorted_data[0][0]:
+            try:
+                if "right" in sorted_data[1][0]:
+                    return "left"
+                elif "left" in sorted_data[0][0]:
+                    return "right"
+            except IndexError:
+                return "right"
 
 
 maze_runner = MazeRunner()
