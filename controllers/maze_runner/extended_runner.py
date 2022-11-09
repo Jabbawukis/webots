@@ -6,7 +6,14 @@ class MazeRunner(Robot):
         super().__init__()
         # Get simulation step length.
         self.timeStep = int(self.getBasicTimeStep())
-        self.distance_sensor_data = None
+
+        self.distance_sensor_data = {
+            "central": [0.0, "no_collision"],
+            "central_left": [0.0, "no_collision"],
+            "central_right": [0.0, "no_collision"],
+            "outer_left": [0.0, "no_collision"],
+            "outer_right": [0.0, "no_collision"]}
+
         self.closest_wall_direction = None
         self.central_wall_collision_threshold = 2700.0
         self.outer_wall_collision_threshold = 2500.0
@@ -62,29 +69,38 @@ class MazeRunner(Robot):
         # Set ideal motor velocity.
         self.velocity = 0.7 * self.maxMotorVelocity
 
+    def update_sensor_data_value(self, new_measurement: float, current_measurement: float):
+        update_rate = 0.3
+        return current_measurement * update_rate + new_measurement * (1 - update_rate)
+
     def robot_change_state(self, next_state: str):
         if self.robot_state != next_state:
             self.robot_previous_state = self.robot_state
             self.robot_state = next_state
 
     def get_and_print_distance_sensor_data(self, print_data=True):
-        data = {"central": [self.centralSensor.getValue(), "no_collision"],
-                "central_left": [self.centralLeftSensor.getValue(), "no_collision"],
-                "central_right": [self.centralRightSensor.getValue(), "no_collision"],
-                "outer_left": [self.outerLeftSensor.getValue(), "no_collision"],
-                "outer_right": [self.outerRightSensor.getValue(), "no_collision"]}
-        for key in data.keys():
-            if "central" in key and data[key][0] >= self.central_wall_collision_threshold:
-                data[key][1] = "collision"
-            elif "outer" in key and data[key][0] >= self.outer_wall_collision_threshold:
-                data[key][1] = "collision"
-        sorted_data = sorted(data.items(), key=lambda kv: kv[1], reverse=True)
+        sensor_dict = {
+            "central": self.centralSensor.getValue(),
+            "central_left": self.centralLeftSensor.getValue(),
+            "central_right": self.centralRightSensor.getValue(),
+            "outer_left": self.outerLeftSensor.getValue(),
+            "outer_right": self.outerRightSensor.getValue()}
+        for key in self.distance_sensor_data.keys():
+            current_measurement = self.distance_sensor_data[key][0]
+            new_measurement = sensor_dict[key]
+            self.distance_sensor_data[key][0] = self.update_sensor_data_value(new_measurement=new_measurement,
+                                                                              current_measurement=current_measurement)
+        for key in self.distance_sensor_data.keys():
+            if "central" in key and self.distance_sensor_data[key][0] >= self.central_wall_collision_threshold:
+                self.distance_sensor_data[key][1] = "collision"
+            elif "outer" in key and self.distance_sensor_data[key][0] >= self.outer_wall_collision_threshold:
+                self.distance_sensor_data[key][1] = "collision"
+        sorted_data = sorted(self.distance_sensor_data.items(), key=lambda kv: kv[1], reverse=True)
         self.closest_wall_direction = None
         for measure in sorted_data:
             if measure[1][0] > 0.0:
                 self.closest_wall_direction = measure[0]
                 break
-        self.distance_sensor_data = data
         if print_data:
             print(self.distance_sensor_data)
 
@@ -135,11 +151,11 @@ class MazeRunner(Robot):
 
 
 maze_runner = MazeRunner()
-maze_runner.robot_go()
+# maze_runner.robot_go()
 while maze_runner.step(maze_runner.timeStep) != -1:
     maze_runner.get_and_print_distance_sensor_data(print_data=True)
     print(maze_runner.closest_wall_direction)
-    maze_runner.robot_u_turn("right", 0.0)
+    # maze_runner.robot_u_turn("right", 0.0)
     # next_maneuver = maze_runner.robot_decide_next_maneuver()
     # print(next_maneuver)
     # if next_maneuver == "go_back":
