@@ -34,6 +34,12 @@ class MazeRunner(Robot):
         self.centralRightSensor = self.getDevice("prox.horizontal.3")
         self.outerRightSensor = self.getDevice("prox.horizontal.4")
 
+        # Enable Motor Position sensors
+        self.leftMotorPosition = self.getDevice("motor.left.position")
+        self.rightMotorPosition = self.getDevice("motor.right.position")
+        self.leftMotorPosition.enable(self.timeStep)
+        self.rightMotorPosition.enable(self.timeStep)
+
         # Enable sensors.
         self.outerLeftSensor.enable(self.timeStep)
         self.centralLeftSensor.enable(self.timeStep)
@@ -129,11 +135,11 @@ class MazeRunner(Robot):
 
 
 maze_runner = MazeRunner()
-# maze_runner.robot_go()
+maze_runner.robot_go()
 while maze_runner.step(maze_runner.timeStep) != -1:
     maze_runner.get_and_print_distance_sensor_data(print_data=True)
     print(maze_runner.closest_wall_direction)
-    # maze_runner.robot_u_turn("right", 0.6)
+    maze_runner.robot_u_turn("right", 0.0)
     # next_maneuver = maze_runner.robot_decide_next_maneuver()
     # print(next_maneuver)
     # if next_maneuver == "go_back":
