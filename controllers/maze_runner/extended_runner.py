@@ -19,6 +19,7 @@ class MazeRunner(Robot):
         self.outer_wall_collision_threshold = 2500.0
 
         self.init_time = 0.0
+        self.sensor_update_rate = 0.6
 
         self.robot_state = "halting"
         self.robot_previous_state = "halting"
@@ -70,8 +71,7 @@ class MazeRunner(Robot):
         self.velocity = 0.7 * self.maxMotorVelocity
 
     def update_sensor_data_value(self, new_measurement: float, current_measurement: float):
-        update_rate = 0.3
-        return current_measurement * update_rate + new_measurement * (1 - update_rate)
+        return current_measurement * self.sensor_update_rate + new_measurement * (1 - self.sensor_update_rate)
 
     def robot_change_state(self, next_state: str):
         if self.robot_state != next_state:
@@ -107,6 +107,8 @@ class MazeRunner(Robot):
     def robot_go(self):
         self.leftMotor.setPosition(float('inf'))
         self.rightMotor.setPosition(float('inf'))
+        self.leftMotor.setVelocity(self.velocity)
+        self.rightMotor.setVelocity(self.velocity)
 
     def robot_stop(self):
         self.leftMotor.setPosition(float(0.0))
@@ -131,12 +133,6 @@ class MazeRunner(Robot):
         self.rightMotor.setPosition(float('inf'))
         self.leftMotor.setVelocity(-self.velocity)
         self.rightMotor.setVelocity(self.velocity)
-
-    def robot_stop_turning_and_go(self):
-        self.leftMotor.setVelocity(self.velocity)
-        self.rightMotor.setVelocity(self.velocity)
-        self.leftMotor.setPosition(float('inf'))
-        self.rightMotor.setPosition(float('inf'))
 
     def robot_u_turn(self, direction: str, turn_strength: float = 0.6):
         if direction == "right":
