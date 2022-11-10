@@ -45,6 +45,8 @@ class MazeRunner(Robot):
         # Enable Motor Position sensors
         self.leftMotorPosition = self.getDevice("motor.left.position")
         self.rightMotorPosition = self.getDevice("motor.right.position")
+        self.leftMotorPosition.enable(self.timeStep)
+        self.rightMotorPosition.enable(self.timeStep)
 
         # Enable sensors.
         self.outerLeftSensor.enable(self.timeStep)
