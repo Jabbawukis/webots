@@ -179,15 +179,29 @@ class MazeRunner(Robot):
             ######
             ###### 6. L/R
             elif self.distance_sensor_data["central"][1] == "no_collision" \
-                    and (self.distance_sensor_data["central_left"][1] == "collision"
-                         or self.distance_sensor_data["outer_left"][1] == "collision"):
-                self.robot_turn_right()
-                self.robot_change_state(next_state="turning_right")
+                    and ((self.distance_sensor_data["central_left"][1] == "collision" and
+                         self.distance_sensor_data["central_left"][0] > self.distance_sensor_data["central_right"][0])
+                         or
+                         (self.distance_sensor_data["outer_left"][1] == "collision" and
+                          self.distance_sensor_data["outer_left"][0] > self.distance_sensor_data["outer_right"][0])):
+                if self.robot_previous_state == "turning_left":
+                    self.robot_turn_left()
+                    self.robot_change_state(next_state="turning_left")
+                else:
+                    self.robot_turn_right()
+                    self.robot_change_state(next_state="turning_right")
             elif self.distance_sensor_data["central"][1] == "no_collision" \
-                    and (self.distance_sensor_data["central_right"][1] == "collision"
-                         or self.distance_sensor_data["outer_right"][1] == "collision"):
-                self.robot_turn_left()
-                self.robot_change_state(next_state="turning_left")
+                    and ((self.distance_sensor_data["central_right"][1] == "collision" and
+                          self.distance_sensor_data["central_left"][0] < self.distance_sensor_data["central_right"][0])
+                         or
+                         (self.distance_sensor_data["outer_right"][1] == "collision" and
+                          self.distance_sensor_data["outer_left"][0] > self.distance_sensor_data["outer_right"][0])):
+                if self.robot_previous_state == "turning_right":
+                    self.robot_turn_right()
+                    self.robot_change_state(next_state="turning_right")
+                else:
+                    self.robot_turn_left()
+                    self.robot_change_state(next_state="turning_left")
             elif self.distance_sensor_data["central"][1] == "no_collision" \
                     and self.distance_sensor_data["outer_left"][1] == "collision" \
                     and self.distance_sensor_data["outer_right"][1] == "collision" \
@@ -205,18 +219,36 @@ class MazeRunner(Robot):
             elif self.distance_sensor_data["central"][1] == "no_collision" \
                     and self.distance_sensor_data["central_left"][1] == "no_collision" \
                     and self.distance_sensor_data["central_right"][1] == "no_collision":
-                if self.distance_sensor_data["outer_left"][0] > self.distance_sensor_data["outer_right"][0]:
-                    self.robot_change_state(next_state="driving_hugging_left_wall")
-                elif self.distance_sensor_data["outer_left"][0] < self.distance_sensor_data["outer_right"][0]:
-                    self.robot_change_state(next_state="driving_hugging_right_wall")
+                if self.distance_sensor_data["outer_left"][0] >= 2000.0 \
+                        and self.distance_sensor_data["outer_left"][0] > self.distance_sensor_data["outer_right"][0]:
+                    if self.distance_sensor_data["outer_left"][1] == "collision":
+                        if self.robot_previous_state == "driving_hugging_right_wall":
+                            self.robot_turn_left()
+                            self.robot_change_state(next_state="turning_left")
+                        else:
+                            self.robot_turn_right()
+                            self.robot_change_state(next_state="turning_right")
+                    else:
+                        self.robot_change_state(next_state="driving_hugging_left_wall")
+                elif self.distance_sensor_data["outer_right"][0] >= 2000.0 \
+                        and self.distance_sensor_data["outer_left"][0] < self.distance_sensor_data["outer_right"][0]:
+                    if self.distance_sensor_data["outer_right"][1] == "collision":
+                        if self.robot_previous_state == "driving_hugging_left_wall":
+                            self.robot_turn_right()
+                            self.robot_change_state(next_state="turning_right")
+                        else:
+                            self.robot_turn_left()
+                            self.robot_change_state(next_state="turning_left")
+                    else:
+                        self.robot_change_state(next_state="driving_hugging_right_wall")
             ######
         elif self.robot_state == "turning_left" or self.robot_state == "turning_right":
             ###### 7.
             if self.distance_sensor_data["central"][1] == "no_collision" \
                     and self.distance_sensor_data["central_left"][1] == "no_collision" \
                     and self.distance_sensor_data["central_right"][1] == "no_collision" \
-                    and self.distance_sensor_data["outer_left"][0] <= 2000.0 \
-                    and self.distance_sensor_data["outer_right"][0] <= 2000.0:
+                    and self.distance_sensor_data["outer_left"][1] == "no_collision" \
+                    and self.distance_sensor_data["outer_right"][1] == "no_collision":
                 self.robot_go()
                 self.robot_change_state(next_state="driving")
             elif self.distance_sensor_data["central"][1] == "no_collision" \
@@ -224,7 +256,7 @@ class MazeRunner(Robot):
                     and self.distance_sensor_data["central_right"][1] == "no_collision" \
                     and self.distance_sensor_data["outer_left"][1] == "collision" \
                     and self.distance_sensor_data["outer_right"][1] == "no_collision":
-                if self.robot_state == "turning_left":
+                if self.robot_state == "turning_left" and "hugging" not in self.robot_previous_state:
                     self.robot_turn_left()
                     self.robot_change_state(next_state="turning_left")
                 else:
@@ -235,7 +267,7 @@ class MazeRunner(Robot):
                     and self.distance_sensor_data["central_right"][1] == "collision" \
                     and self.distance_sensor_data["outer_left"][1] == "no_collision" \
                     and self.distance_sensor_data["outer_right"][1] == "collision":
-                if self.robot_state == "turning_right":
+                if self.robot_state == "turning_right" and "hugging" not in self.robot_previous_state:
                     self.robot_turn_right()
                     self.robot_change_state(next_state="turning_right")
                 else:
