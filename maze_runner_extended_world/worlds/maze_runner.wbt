@@ -41,8 +41,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation -0.34183064408914227 -0.3997551194715711 0.8504984745535243 4.4315771174466905
-  position 0.030923913501025874 1.7214386952113605 2.8901596975222996
+  orientation -0.4444437388635774 -0.5127141087325471 0.734570626755218 4.328137980845959
+  position 0.05285587100144389 0.666166066678159 2.74748100982149
   followSmoothness 0.01
 }
 TexturedBackground {
@@ -195,7 +195,7 @@ DEF MAZE_WALLS Group {
       length 0.142
     }
     MazeBlock {
-      translation -0.219397 -0.667254 0.609557
+      translation -0.225208 -0.671313 0.609557
       rotation 0 0 1 2.35619
       name "maze block(16)"
       length 0.28
@@ -219,12 +219,12 @@ DEF MAZE_WALLS Group {
       length 0.4
     }
     MazeBlock {
-      translation 0.49041 -0.359896 0.609605
+      translation 0.491435 -0.35595 0.609605
       name "maze block(23)"
       length 1.74
     }
     MazeBlock {
-      translation 0.00779302 0.523872 0.60951
+      translation 0.0031874 0.520873 0.60951
       rotation 0 0 1 -1.56831
       name "maze block(24)"
       length 1
@@ -238,7 +238,7 @@ MazeBlock {
   length 0.2
 }
 DEF THYMIO2 Thymio2 {
-  translation -0.409935 0.413482 0.609372
+  translation -0.0299858 0.373368 0.614958
   rotation -0.0014792703883003233 -0.9997822624373331 -0.020814405463666707 0.0146654
   controller "<extern>"
   controllerArgs []

@@ -19,7 +19,7 @@ class MazeRunner(Robot):
         self.outer_wall_collision_threshold = 2500.0
 
         self.init_time = 0.0
-        self.sensor_update_rate = 0.6
+        self.sensor_update_rate = 0.3
 
         self.robot_state = "halting"
         self.robot_previous_state = "halting"
@@ -45,8 +45,6 @@ class MazeRunner(Robot):
         # Enable Motor Position sensors
         self.leftMotorPosition = self.getDevice("motor.left.position")
         self.rightMotorPosition = self.getDevice("motor.right.position")
-        self.leftMotorPosition.enable(self.timeStep)
-        self.rightMotorPosition.enable(self.timeStep)
 
         # Enable sensors.
         self.outerLeftSensor.enable(self.timeStep)
@@ -86,15 +84,18 @@ class MazeRunner(Robot):
             "outer_left": self.outerLeftSensor.getValue(),
             "outer_right": self.outerRightSensor.getValue()}
         for key in self.distance_sensor_data.keys():
-            current_measurement = self.distance_sensor_data[key][0]
-            new_measurement = sensor_dict[key]
-            self.distance_sensor_data[key][0] = self.update_sensor_data_value(new_measurement=new_measurement,
-                                                                              current_measurement=current_measurement)
+            self.distance_sensor_data[key][0] = sensor_dict[key]
         for key in self.distance_sensor_data.keys():
-            if "central" in key and self.distance_sensor_data[key][0] >= self.central_wall_collision_threshold:
-                self.distance_sensor_data[key][1] = "collision"
-            elif "outer" in key and self.distance_sensor_data[key][0] >= self.outer_wall_collision_threshold:
-                self.distance_sensor_data[key][1] = "collision"
+            if "central" in key:
+                if self.distance_sensor_data[key][0] >= self.central_wall_collision_threshold:
+                    self.distance_sensor_data[key][1] = "collision"
+                else:
+                    self.distance_sensor_data[key][1] = "no_collision"
+            elif "outer" in key:
+                if self.distance_sensor_data[key][0] >= self.outer_wall_collision_threshold:
+                    self.distance_sensor_data[key][1] = "collision"
+                else:
+                    self.distance_sensor_data[key][1] = "no_collision"
         sorted_data = sorted(self.distance_sensor_data.items(), key=lambda kv: kv[1], reverse=True)
         self.closest_wall_direction = None
         for measure in sorted_data:
@@ -119,18 +120,10 @@ class MazeRunner(Robot):
         self.rightMotor.setVelocity(-self.velocity)
 
     def robot_turn_right(self):
-        self.leftMotor.setPosition(float(0.0))
-        self.rightMotor.setPosition(float(0.0))
-        self.leftMotor.setPosition(float('inf'))
-        self.rightMotor.setPosition(float('inf'))
         self.leftMotor.setVelocity(self.velocity)
         self.rightMotor.setVelocity(-self.velocity)
 
     def robot_turn_left(self):
-        self.leftMotor.setPosition(float(0.0))
-        self.rightMotor.setPosition(float(0.0))
-        self.leftMotor.setPosition(float('inf'))
-        self.rightMotor.setPosition(float('inf'))
         self.leftMotor.setVelocity(-self.velocity)
         self.rightMotor.setVelocity(self.velocity)
 
@@ -143,16 +136,118 @@ class MazeRunner(Robot):
             self.rightMotor.setVelocity(self.velocity)
 
     def robot_decide_next_maneuver(self):
-        pass
+        if self.robot_state == "halting":
+            self.robot_go()
+            self.robot_change_state(next_state="driving")
+        if "driving" in self.robot_state:
+            ###### 8b. L/R
+            if "hugging" in self.robot_state:
+                if self.distance_sensor_data["central"][1] == "no_collision" \
+                        and self.distance_sensor_data["central_left"][1] == "no_collision" \
+                        and self.distance_sensor_data["central_right"][1] == "no_collision":
+                    if self.distance_sensor_data["outer_left"][0] == 0.0 \
+                            and self.robot_state == "driving_hugging_left_wall":
+                        self.leftMotorInitPosition = self.leftMotorPosition.getValue()
+                        self.rightMotorInitPosition = self.rightMotorPosition.getValue()
+                        self.robot_change_state(next_state="approach_to_left_wall_edge")
+                    elif self.distance_sensor_data["outer_right"][0] == 0.0 \
+                            and self.robot_state == "driving_hugging_right_wall":
+                        self.leftMotorInitPosition = self.leftMotorPosition.getValue()
+                        self.rightMotorInitPosition = self.rightMotorPosition.getValue()
+                        self.robot_change_state(next_state="approach_to_right_wall_edge")
+            ######
+            ###### 2. L/R
+            if self.distance_sensor_data["central"][1] == "collision":
+                if self.distance_sensor_data["outer_left"][0] > self.distance_sensor_data["outer_right"][0]:
+                    self.robot_turn_right()
+                    self.robot_change_state(next_state="turning_right")
+                elif self.distance_sensor_data["outer_left"][0] < self.distance_sensor_data["outer_right"][0]:
+                    self.robot_turn_left()
+                    self.robot_change_state(next_state="turning_left")
+            ######
+            ###### 6. L/R
+            elif self.distance_sensor_data["central"][1] == "no_collision" \
+                    and (self.distance_sensor_data["central_left"][1] == "collision"
+                         or self.distance_sensor_data["outer_left"][1] == "collision"):
+                self.robot_turn_right()
+                self.robot_change_state(next_state="turning_right")
+            elif self.distance_sensor_data["central"][1] == "no_collision" \
+                    and (self.distance_sensor_data["central_right"][1] == "collision"
+                         or self.distance_sensor_data["outer_right"][1] == "collision"):
+                self.robot_turn_left()
+                self.robot_change_state(next_state="turning_left")
+            ######
+            ###### 8a. L/R
+            elif self.distance_sensor_data["central"][1] == "no_collision" \
+                    and self.distance_sensor_data["central_left"][1] == "no_collision" \
+                    and self.distance_sensor_data["central_right"][1] == "no_collision":
+                if self.distance_sensor_data["outer_left"][0] > self.distance_sensor_data["outer_right"][0]:
+                    self.robot_change_state(next_state="driving_hugging_left_wall")
+                elif self.distance_sensor_data["outer_left"][0] < self.distance_sensor_data["outer_right"][0]:
+                    self.robot_change_state(next_state="driving_hugging_right_wall")
+            ######
+        elif self.robot_state == "turning_left" or self.robot_state == "turning_right":
+            ###### 7.
+            if self.distance_sensor_data["central"][1] == "no_collision" \
+                    and self.distance_sensor_data["central_left"][1] == "no_collision" \
+                    and self.distance_sensor_data["central_right"][1] == "no_collision" \
+                    and self.distance_sensor_data["outer_left"][1] == "no_collision" \
+                    and self.distance_sensor_data["outer_right"][1] == "no_collision":
+                self.robot_go()
+                self.robot_change_state(next_state="driving")
+            ######
+        elif self.robot_state == "approach_to_right_wall_edge" or self.robot_state == "approach_to_left_wall_edge":
+            ###### 8c. L/R
+            left = self.leftMotorPosition.getValue()
+            right = self.rightMotorPosition.getValue()
+            t1 = self.leftMotorInitPosition
+            t2 = self.rightMotorInitPosition
+            if self.distance_sensor_data["central"][1] == "no_collision" \
+                    and self.distance_sensor_data["central_left"][1] == "no_collision" \
+                    and self.distance_sensor_data["central_right"][1] == "no_collision" \
+                    and self.distance_sensor_data["outer_left"][1] == "no_collision" \
+                    and self.distance_sensor_data["outer_right"][1] == "no_collision":
+                if self.leftMotorInitPosition + 6.0 <= left \
+                        and self.rightMotorInitPosition + 6.0 <= right:
+                    if self.robot_state == "approach_to_left_wall_edge":
+                        self.robot_u_turn(direction="left", turn_strength=0.1)
+                        self.robot_change_state(next_state="u_turning_left")
+                    elif self.robot_state == "approach_to_right_wall_edge":
+                        self.robot_u_turn(direction="right", turn_strength=0.1)
+                        self.robot_change_state(next_state="u_turning_right")
+            else:
+                self.robot_go()
+                self.robot_change_state(next_state="driving")
+            ######
+        elif self.robot_state == "u_turning_right" or self.robot_state == "u_turning_left":
+            ###### 8d. L/R
+            if self.distance_sensor_data["central"][1] == "collsion" \
+                    or self.distance_sensor_data["central_left"][1] == "collision" \
+                    or self.distance_sensor_data["central_right"][1] == "collision" \
+                    and (self.distance_sensor_data["outer_left"][1] == "no_collision"
+                         and self.distance_sensor_data["outer_right"][1] == "no_collision"):
+                if self.robot_state == "u_turning_left":
+                    self.robot_turn_left()
+                    self.robot_change_state(next_state="turning_left")
+                elif self.robot_state == "u_turning_right":
+                    self.robot_turn_right()
+                    self.robot_change_state(next_state="turning_right")
+            elif self.distance_sensor_data["central"][1] == "no_collision" \
+                    and self.distance_sensor_data["central_left"][1] == "no_collision" \
+                    and self.distance_sensor_data["central_right"][1] == "no_collision" \
+                    and (self.distance_sensor_data["outer_left"][1] == "collision"
+                         or self.distance_sensor_data["outer_right"][1] == "collision"):
+                self.robot_go()
+                self.robot_change_state(next_state="driving")
+            ######
 
 
 maze_runner = MazeRunner()
-# maze_runner.robot_go()
 while maze_runner.step(maze_runner.timeStep) != -1:
-    maze_runner.get_and_print_distance_sensor_data(print_data=True)
-    print(maze_runner.closest_wall_direction)
-    # maze_runner.robot_u_turn("right", 0.0)
-    # next_maneuver = maze_runner.robot_decide_next_maneuver()
+    maze_runner.get_and_print_distance_sensor_data(print_data=False)
+    print(f"Closest Wall Direction: {maze_runner.closest_wall_direction}")
+    print(f"Robot Current State: {maze_runner.robot_state}")
+    maze_runner.robot_decide_next_maneuver()
     # print(next_maneuver)
     # if next_maneuver == "go_back":
     #     maze_runner.robot_back_of()
