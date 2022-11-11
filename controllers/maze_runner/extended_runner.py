@@ -6,7 +6,7 @@ class MazeRunner(Robot):
         super().__init__()
         # Get simulation step length.
         self.timeStep = int(self.getBasicTimeStep())
-
+        # Hier werden alle Parameter initiiert
         self.distance_sensor_data = {
             "central": [0.0, "no_collision"],
             "central_left": [0.0, "no_collision"],
@@ -74,12 +74,12 @@ class MazeRunner(Robot):
 
     def update_sensor_data_value(self, new_measurement: float, current_measurement: float):
         return current_measurement * self.sensor_update_rate + new_measurement * (1 - self.sensor_update_rate)
-
+    # Ich arbeite mit einer state Machiene, daher wird der zustand mit jedem Manöver gewecheslt
     def robot_change_state(self, next_state: str):
         if self.robot_state != next_state:
             self.robot_previous_state = self.robot_state
             self.robot_state = next_state
-
+    # Hier werden die sensor daten geholt und zu jedem zeitpunkt ermittelt, ob eine Kollision bevorsteht
     def get_and_print_distance_sensor_data(self, print_data=True):
         sensor_dict = {
             "central": self.centralSensor.getValue(),
@@ -111,7 +111,7 @@ class MazeRunner(Robot):
                 break
         if print_data:
             print(self.distance_sensor_data)
-
+    # Hier werden die einzelnen Manöver ausgeführt
     def robot_go(self):
         self.leftMotor.setPosition(float('inf'))
         self.rightMotor.setPosition(float('inf'))
@@ -141,12 +141,9 @@ class MazeRunner(Robot):
         elif direction == "left":
             self.leftMotor.setVelocity(self.velocity * turn_strength)
             self.rightMotor.setVelocity(self.velocity)
-
+    # Mittels der state Maschiene, wird der roboter in den nächsten Zustand überführt, abhängig vom Momentanen
+    # zustand und den Sensor daten
     def robot_decide_next_maneuver(self):
-        # if self.groundLeftSensor.getValue() <= self.black_circle_threshold \
-        #         or self.groundRightSensor.getValue() <= self.black_circle_threshold:
-        #     self.robot_stop()
-        #     self.robot_change_state(next_state="black_detected")
         if self.robot_state == "halting":
             self.robot_go()
             self.robot_change_state(next_state="driving")
@@ -337,8 +334,6 @@ class MazeRunner(Robot):
                     and self.distance_sensor_data["outer_right"][1] == "no_collision":
                 left = self.leftMotorPosition.getValue()
                 right = self.rightMotorPosition.getValue()
-                t1 = self.leftMotorInitPosition
-                t2 = self.rightMotorInitPosition
                 if self.robot_state == "u_turning_left":
                     if right >= self.rightMotorInitPosition + 15.0:
                         self.robot_go()
@@ -352,19 +347,6 @@ class MazeRunner(Robot):
 
 maze_runner = MazeRunner()
 while maze_runner.step(maze_runner.timeStep) != -1:
-    if maze_runner.robot_state == "black_detected":
-        break
     maze_runner.get_and_print_distance_sensor_data(print_data=False)
-    print(f"Closest Wall Direction: {maze_runner.closest_wall_direction}")
     print(f"Robot Current State: {maze_runner.robot_state}")
     maze_runner.robot_decide_next_maneuver()
-
-    # print(next_maneuver)
-    # if next_maneuver == "go_back":
-    #     maze_runner.robot_back_of()
-    # if next_maneuver == "turn_right":
-    #     maze_runner.robot_turn_right()
-    # if next_maneuver == "turn_left":
-    #     maze_runner.robot_turn_left()
-    # if next_maneuver == "go_forward":
-    #     maze_runner.robot_stop_turning_and_go()

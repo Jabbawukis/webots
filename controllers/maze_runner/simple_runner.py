@@ -7,7 +7,7 @@ class MazeRunner(Robot):
         super().__init__()
         # Get simulation step length.
         self.timeStep = int(self.getBasicTimeStep())
-
+        # Hier werden alle Parameter initiiert
         self.central = 0.0
         self.central_left = 0.0
         self.outer_left = 0.0
@@ -63,6 +63,7 @@ class MazeRunner(Robot):
         # Set ideal motor velocity.
         self.velocity = 0.7 * self.maxMotorVelocity
 
+    # Hier werden die sensor daten geholt und zu jedem zeitpunkt ermittelt, ob eine Kollision bevorsteht
     def get_and_print_distance_sensor_data(self, print_data=True):
         self.collisions_detected = None
         collision = {}
@@ -104,6 +105,7 @@ class MazeRunner(Robot):
             self.robot_last_state = self.robot_state
             self.robot_state = "going_forward"
 
+    # Hier werden die sensor daten geholt und zu jedem zeitpunkt ermittelt, ob ein Scharzer Punkt überfahren wurde
     def get_and_print_ground_sensor_data(self, print_data=True):
         self.ground_left = self.groundLeftSensor.getValue()
         self.ground_right = self.groundRightSensor.getValue()
@@ -121,6 +123,7 @@ class MazeRunner(Robot):
                 self.black_circles_detected += 1
                 print(self.black_circles_detected)
 
+    # Hier werden die einzelnen Manöver ausgeführt
     def robot_go(self):
         self.leftMotor.setPosition(float('inf'))
         self.rightMotor.setPosition(float('inf'))
@@ -151,6 +154,7 @@ class MazeRunner(Robot):
         self.leftMotor.setVelocity(self.velocity)
         self.rightMotor.setVelocity(self.velocity)
 
+    # Hier wird abhängig von den Daten die richtung in die gefahren soll vorgegeben
     def robot_detect_open_space(self):
         sorted_data = sorted(self.collisions_detected.items(), key=lambda kv: kv[1], reverse=True)
         if "left" in sorted_data[0][0]:
@@ -166,7 +170,8 @@ class MazeRunner(Robot):
             except IndexError:
                 return "right"
 
-
+ # Mittels der state Maschiene, wird der roboter in den nächsten Zustand überführt, abhängig vom Momentanen
+ # zustand und den Sensor daten
 maze_runner = MazeRunner()
 maze_runner.robot_go()
 while maze_runner.step(maze_runner.timeStep) != -1:
