@@ -184,8 +184,6 @@ while maze_runner.step(maze_runner.timeStep) != -1:
     if maze_runner.robot_state == "going_forward" and maze_runner.robot_last_state == "going_forward":
         maze_runner.robot_stop_turning()
         maze_runner.robot_go()
-    if maze_runner.black_circles_detected == 5:
-        current_time = maze_runner.getTime()
-        if current_time > maze_runner.init_time + 5.0:
-            maze_runner.robot_stop()
-            break
+    if maze_runner.black_circles_detected == 6:
+        maze_runner.robot_stop()
+        break

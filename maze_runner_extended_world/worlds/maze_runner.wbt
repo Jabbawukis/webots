@@ -41,15 +41,15 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation 0.5912439444323762 -0.5768316021495226 -0.5636451906418258 4.337062264370001
-  position -0.17005373093569193 -1.2394988006954388 2.07369269397812
+  orientation 0.4631032765713567 0.5235411444234609 -0.7151503515517883 1.993709970231094
+  position 0.05180517053066086 0.5473071779780684 2.9648501993178566
   followSmoothness 0.01
 }
 TexturedBackground {
   texture "empty_office"
 }
 CeilingLight {
-  translation 0 -0.45 2.32
+  translation 0.0290716 -2.745 2.32
   name "ceiling light(1)"
   pointLightRadius 0.1
   castShadows FALSE
@@ -64,7 +64,7 @@ SpotLight {
   castShadows TRUE
 }
 Table {
-  translation 0.0010343 -0.362252 2.15828e-13
+  translation -0.000130893 -0.362711 2.1605e-13
   rotation 0 0 1 3.14159
   size 1 1.8 0.61
   feetSize 0.4 0.05
@@ -86,160 +86,156 @@ Table {
   }
 }
 MazeBlock {
-  translation -0.395843 0.156959 0.609656
-  rotation 0 0 1 1.5708
-  name "maze block(25)"
-  length 0.142
+  translation -0.00332867 -1.23412 0.609139
+  rotation 3.33361e-17 -3.83113e-17 1 -1.5707953071795862
+  name "maze block(18)"
+  length 1
 }
 MazeBlock {
-  translation 0.307907 -0.458089 0.609656
-  rotation 0 0 1 2.8798
-  name "maze block(22)"
-  length 0.142
-}
-MazeBlock {
-  translation -0.398156 0.00701892 0.609656
-  rotation 0 0 1 1.5708
+  translation -0.272713 0.21788 0.609728
+  rotation -8.15117e-17 -1.745e-16 1 -0.785395307179586
   name "maze block(20)"
   length 0.142
 }
 MazeBlock {
-  translation 0.289677 -0.87877 0.60951
-  rotation 0 0 1 3.14159
+  translation 0.309583 -0.452571 0.6097283611002158
+  rotation -4.220411502927646e-17 -6.584178399835275e-19 1 2.8798
+  name "maze block(22)"
+  length 0.142
+}
+MazeBlock {
+  translation 0.289356 -0.87448 0.6086609350002162
+  rotation 1.3050288068155657e-16 -4.423834033314627e-18 1 3.14159
   name "maze block(19)"
   length 0.7
 }
 MazeBlock {
-  translation -0.335094 -0.258678 0.60951
-  rotation 0 0 1 3.14159
+  translation -0.34042 -0.256565 0.6089670070002162
+  rotation -1.1230504409798126e-16 -1.3684607528583716e-18 1 3.14159
   name "maze block(14)"
-  length 0.5
+  length 0.54
 }
 MazeBlock {
-  translation -0.401673 -0.523523 0.609656
-  rotation 0 0 1 1.5708
+  translation -0.400678 -0.535447 0.6097283611002158
+  rotation -9.712293354382102e-17 1.3263230265624507e-16 1 1.5708000000000004
   name "maze block(9)"
   length 0.142
 }
 MazeBlock {
-  translation -0.289068 0.227496 0.609656
-  rotation 0 0 1 -0.523595307179586
+  translation -0.333413 0.088585 0.6097168834002158
+  rotation 9.611958728822968e-17 7.604242279605539e-16 -1 0.09999999999999996
   name "maze block(10)"
-  length 0.142
+  length 0.148
 }
 MazeBlock {
-  translation 0.0505563 -0.798314 0.60951
-  rotation 0 0 1 -5.307179586466759e-06
+  translation 0.0533858 -0.695257 0.609044
+  rotation 8.101981254548785e-13 -2.603364391559174e-12 -1 5.3071795864676385e-06
   name "maze block(7)"
-  length 0.5
+  length 0.3
 }
 MazeBlock {
-  translation -0.134866 -0.926913 0.609475
-  rotation -1 0 0 -0.000268
+  translation -0.11694299999999999 -0.9240520000000001 0.6094261150002158
+  rotation 0.051833590943884573 -0.998437655926478 0.020869261556214495 2.2296381209111035e-16
   name "maze block(6)"
   length 0.3
 }
 MazeBlock {
-  translation -0.185305 0.247077 0.609656
-  rotation 0 0 1 -2.094395307179586
+  translation -0.16868 0.209943 0.609728
+  rotation 1.3191e-17 9.58861e-18 -1 2.0944
   name "maze block(5)"
-  length 0.142
+  length 0.141
 }
 MazeBlock {
-  translation -0.119204 0.134675 0.609656
-  rotation 0 0 1 1.38733e-06
+  translation -0.0943153 0.139178 0.609728
+  rotation 1.1375938252282518e-11 -1.4807528014080267e-10 0.9999999999999999 1.387330000001383e-06
   name "maze block(4)"
   length 0.142
 }
 MazeBlock {
-  translation 0.17743 -0.324993 0.60951
-  rotation 0 0 1 2.61799
+  translation 0.17743 -0.324993 0.6090435250002163
+  rotation 3.360684928962209e-17 -1.7425702615686126e-18 1 2.61799
   name "maze block(3)"
   length 0.5
 }
 DEF MAZE_WALLS Group {
   children [
     MazeBlock {
-      translation -0.115172 -0.227947 0.609289
-      rotation 0.00019912396741260702 0.0015124997524736752 0.9999988363463952 -2.8797953071795863
+      translation -0.134092 -0.22822 0.609425
+      rotation -0.0013120669353058178 -5.668605171097722e-06 0.9999991392237416 -3.1415882539153714
       name "maze block(1)"
       length 0.3
     }
     MazeBlock {
-      translation 0.0294325 -0.0354714 0.60951
-      rotation 0 0 1 2.87979
+      translation 0.002666819999996592 -0.03756170000000002 0.6086035465002162
+      rotation -7.600970911851571e-16 1.257494118202049e-16 1 2.8
       name "maze block(8)"
-      length 0.7
+      length 0.73
     }
     MazeBlock {
-      translation -0.191466 0.300474 0.60951
-      rotation 0 0 1 -1.570796
+      translation -0.187758 0.30267299999999997 0.6088522300002163
+      rotation -5.424193194171341e-16 -5.374173507058216e-16 -1 1.570796
       name "maze block(11)"
       length 0.6
     }
     MazeBlock {
-      translation -0.480537 -0.470698 0.60951
+      translation -0.480537 -0.470698 0.6071114455002162
+      rotation -0.10821881565855378 0.9920021913291454 0.06496414653971637 1.6399373508074523e-17
       name "maze block(12)"
       length 1.51
     }
     MazeBlock {
-      translation -0.319097 -1.00124 0.609475
-      rotation -1 0 0 -0.000268
+      translation -0.302508 -1.0003900000000003 0.6091391725002159
+      rotation 0.06786496922985097 0.9773099274805738 0.20064807898244894 7.331078766761103e-17
       name "maze block(13)"
       length 0.45
     }
     MazeBlock {
-      translation -0.137228 -0.00918617 0.609656
-      rotation 0 0 -1 0.261798
+      translation -0.113528 -0.00435547 0.609729
+      rotation 0 0 1 -0.261795307179586
       name "maze block(15)"
       length 0.142
     }
     MazeBlock {
-      translation -0.226976 -0.768015 0.609557
-      rotation 0 0 -1 -1.5707953071795862
+      translation -0.21044 -0.765136 0.6096174100002159
+      rotation 1.0609037339962622e-16 -1.1844934813283275e-16 0.9999999999999999 1.5707953071795862
       name "maze block(16)"
       length 0.2
     }
     MazeBlock {
-      translation 0.394928 -0.104321 0.609557
-      rotation -9.58979e-09 9.5898e-09 -1 -1.5707953071795862
+      translation 0.39492799999999983 -0.10432099999999994 0.6096747985002158
+      rotation 1.2688527382679244e-16 -1.1767281082288424e-16 0.9999999999999999 1.5707953071795862
       name "maze block(17)"
       length 0.17
     }
     MazeBlock {
-      translation 0.00157829 -1.23832 0.609536
-      rotation 0 0 -1 -1.570796
-      name "maze block(18)"
-      length 0.99
-    }
-    MazeBlock {
-      translation 0.323328 0.105802 0.60951
-      rotation 0 0 1 -5.307179586466759e-06
+      translation 0.323328 0.105802 0.6092348200002162
+      rotation 3.1358681633774934e-13 1.265648783152296e-11 -1 5.307179586467662e-06
       name "maze block(21)"
       length 0.4
     }
     MazeBlock {
-      translation 0.491435 -0.35595 0.609605
+      translation 0.491435 -0.35595 0.6066714670002162
+      rotation 0.006615075122734202 -0.9999706878601394 -0.0038554119935744545 2.5059862027640554e-16
       name "maze block(23)"
-      length 1.74
+      length 1.73
     }
     MazeBlock {
-      translation 0.0031874 0.520873 0.60951
-      rotation 0 0 1 -1.56831
+      translation 0.003187377885344377 0.5208730000536769 0.6080870288408525
+      rotation -5.70108407346577e-06 7.084737166355211e-06 -0.9999999999586522 1.5683100000495376
       name "maze block(24)"
       length 1
     }
   ]
 }
 MazeBlock {
-  translation -0.48021 0.411324 0.609445
-  rotation -1 0 0 -0.000268
+  translation -0.48021 0.41132399999997693 0.6096174100002159
+  rotation 0.8968690019588476 0.4393505316621424 -0.05096178620822909 2.5772633341479044e-16
   name "maze block(2)"
   length 0.2
 }
 DEF THYMIO2 Thymio2 {
-  translation -0.17895 -1.1492 0.614958
-  rotation -0.0073310809325849114 1.0842801379309963e-05 0.9999731272063231 3.14129
+  translation -0.419463 0.386864 0.60833
+  rotation 0 0 1 5.09594e-06
   controller "<extern>"
   controllerArgs []
 }
@@ -521,13 +517,13 @@ Desk {
   name "desk(3)"
 }
 Laptop {
-  translation 2.520944 -0.652021 0.709285
-  rotation -0.0011619992155090305 -0.9999993248786837 0 0.001638
+  translation 2.520929286125108 -0.65201966301286 0.6941300102328095
+  rotation 0.03912225302293372 0.9992344190126501 -0.00015867848358799144 0.009485068952264792
   controller "<none>"
 }
 Laptop {
-  translation -2.231749 0.215506 0.709268
-  rotation 0.0008149997293284472 0 0.9999996678876654 -3.141593
+  translation -2.231734288002036 0.21550466786589076 0.6941300113861625
+  rotation -0.0047386495872462535 0.00018554217808902055 0.9999887553238735 3.1415908126038223
   name "laptop(1)"
   controller "<none>"
 }
