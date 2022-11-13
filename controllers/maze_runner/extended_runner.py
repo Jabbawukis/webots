@@ -86,7 +86,7 @@ class MazeRunner(Robot):
             self.robot_state = next_state
 
     # Hier werden die sensor daten geholt und zu jedem zeitpunkt ermittelt, ob eine Kollision bevorsteht
-    # es wird jeweils der durschnitt der letzten 5 sensor daten genommen
+    # es wird jeweils der durschnitt der letzten 3 sensor daten genommen
     def get_and_print_distance_sensor_data(self, print_data=True):
         self.distance_sensor_data_iterated["central"].append(self.centralSensor.getValue())
         self.distance_sensor_data_iterated["central_left"].append(self.centralLeftSensor.getValue())
@@ -96,7 +96,7 @@ class MazeRunner(Robot):
         for key in self.distance_sensor_data.keys():
             new_measurement = self.update_sensor_data_value(measure_list=self.distance_sensor_data_iterated[key])
             self.distance_sensor_data[key][0] = new_measurement
-            if len(self.distance_sensor_data_iterated[key]) == 5:
+            if len(self.distance_sensor_data_iterated[key]) == 3:
                 self.distance_sensor_data_iterated[key].pop(0)
         for key in self.distance_sensor_data.keys():
             if "central" in key:
@@ -197,6 +197,12 @@ class MazeRunner(Robot):
                     else:
                         self.robot_turn_left()
                         self.robot_change_state(next_state="turning_left")
+                elif self.distance_sensor_data["central_left"][0] == 0.0 \
+                        and self.distance_sensor_data["central_right"][0] == 0.0 \
+                        and self.distance_sensor_data["outer_left"][0] == 0.0 \
+                        and self.distance_sensor_data["outer_right"][0] == 0.0:
+                    self.robot_turn_right()
+                    self.robot_change_state(next_state="turning_right")
             ######
             ###### 6. L/R
             elif self.distance_sensor_data["central"][1] == "no_collision" \
@@ -247,6 +253,12 @@ class MazeRunner(Robot):
                         self.robot_turn_right()
                         self.robot_change_state(next_state="turning_right")
                         self.close_wall_detected = None
+                    elif self.distance_sensor_data["central_left"][0] == 0.0 \
+                            and self.distance_sensor_data["central_right"][0] == 0.0 \
+                            and self.distance_sensor_data["outer_left"][1] == "collision" \
+                            and self.distance_sensor_data["outer_right"][0] == 0.0:
+                        self.robot_turn_right()
+                        self.robot_change_state(next_state="turning_right")
                     else:
                         self.close_wall_detected = "left"
                 elif self.distance_sensor_data["outer_right"][0] >= 1400.0 \
@@ -256,6 +268,12 @@ class MazeRunner(Robot):
                         self.robot_turn_left()
                         self.robot_change_state(next_state="turning_left")
                         self.close_wall_detected = None
+                    elif self.distance_sensor_data["central_left"][0] == 0.0 \
+                            and self.distance_sensor_data["central_right"][0] == 0.0 \
+                            and self.distance_sensor_data["outer_left"][0] == 0.0 \
+                            and self.distance_sensor_data["outer_right"][1] == "collision":
+                        self.robot_turn_left()
+                        self.robot_change_state(next_state="turning_left")
                     else:
                         self.close_wall_detected = "right"
             ######

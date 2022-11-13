@@ -165,7 +165,7 @@ class MazeRunner(Robot):
             try:
                 if "right" in sorted_data[1][0]:
                     return "left"
-                elif "left" in sorted_data[0][0]:
+                elif "left" in sorted_data[1][0]:
                     return "right"
             except IndexError:
                 return "right"
