@@ -86,7 +86,7 @@ class MazeRunner(Robot):
             self.robot_state = next_state
 
     # Hier werden die sensor daten geholt und zu jedem zeitpunkt ermittelt, ob eine Kollision bevorsteht
-    # es wird jeweils der durschnitt der letzten 3 sensor daten genommen
+    # es wird jeweils der durschnitt der letzten 5 sensor daten genommen
     def get_and_print_distance_sensor_data(self, print_data=True):
         self.distance_sensor_data_iterated["central"].append(self.centralSensor.getValue())
         self.distance_sensor_data_iterated["central_left"].append(self.centralLeftSensor.getValue())
@@ -96,7 +96,7 @@ class MazeRunner(Robot):
         for key in self.distance_sensor_data.keys():
             new_measurement = self.update_sensor_data_value(measure_list=self.distance_sensor_data_iterated[key])
             self.distance_sensor_data[key][0] = new_measurement
-            if len(self.distance_sensor_data_iterated[key]) == 3:
+            if len(self.distance_sensor_data_iterated[key]) == 5:
                 self.distance_sensor_data_iterated[key].pop(0)
         for key in self.distance_sensor_data.keys():
             if "central" in key:
