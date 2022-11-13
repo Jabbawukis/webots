@@ -14,14 +14,18 @@ class MazeRunner(Robot):
             "outer_left": [0.0, "no_collision"],
             "outer_right": [0.0, "no_collision"]}
 
+        self.distance_sensor_data_iterated = {
+            "central": [],
+            "central_left": [],
+            "central_right": [],
+            "outer_left": [],
+            "outer_right": []}
+
         self.closest_wall_direction = None
         self.furthest_wall_direction = None
         self.close_wall_detected = ""
         self.central_wall_collision_threshold = 2700.0
         self.outer_wall_collision_threshold = 2300.0
-
-        self.init_time = 0.0
-        self.sensor_update_rate = 0.0
 
         self.robot_state = "halting"
         self.robot_previous_state = "halting"
@@ -72,25 +76,28 @@ class MazeRunner(Robot):
         # Set ideal motor velocity.
         self.velocity = 0.7 * self.maxMotorVelocity
 
-    def update_sensor_data_value(self, new_measurement: float, current_measurement: float):
-        return current_measurement * self.sensor_update_rate + new_measurement * (1 - self.sensor_update_rate)
+    def update_sensor_data_value(self, measure_list: list):
+        return sum(measure_list) / len(measure_list)
+
     # Ich arbeite mit einer state Machiene, daher wird der zustand mit jedem Manöver gewecheslt
     def robot_change_state(self, next_state: str):
         if self.robot_state != next_state:
             self.robot_previous_state = self.robot_state
             self.robot_state = next_state
+
     # Hier werden die sensor daten geholt und zu jedem zeitpunkt ermittelt, ob eine Kollision bevorsteht
+    # es wird jeweils der durschnitt der letzten 5 sensor daten genommen
     def get_and_print_distance_sensor_data(self, print_data=True):
-        sensor_dict = {
-            "central": self.centralSensor.getValue(),
-            "central_left": self.centralLeftSensor.getValue(),
-            "central_right": self.centralRightSensor.getValue(),
-            "outer_left": self.outerLeftSensor.getValue(),
-            "outer_right": self.outerRightSensor.getValue()}
+        self.distance_sensor_data_iterated["central"].append(self.centralSensor.getValue())
+        self.distance_sensor_data_iterated["central_left"].append(self.centralLeftSensor.getValue())
+        self.distance_sensor_data_iterated["central_right"].append(self.centralRightSensor.getValue())
+        self.distance_sensor_data_iterated["outer_left"].append(self.outerLeftSensor.getValue())
+        self.distance_sensor_data_iterated["outer_right"].append(self.outerRightSensor.getValue())
         for key in self.distance_sensor_data.keys():
-            current_measurement = self.distance_sensor_data[key][0]
-            self.distance_sensor_data[key][0] = self.update_sensor_data_value(new_measurement=sensor_dict[key],
-                                                                              current_measurement=current_measurement)
+            new_measurement = self.update_sensor_data_value(measure_list=self.distance_sensor_data_iterated[key])
+            self.distance_sensor_data[key][0] = new_measurement
+            if len(self.distance_sensor_data_iterated[key]) == 5:
+                self.distance_sensor_data_iterated[key].pop(0)
         for key in self.distance_sensor_data.keys():
             if "central" in key:
                 if self.distance_sensor_data[key][0] >= self.central_wall_collision_threshold:
@@ -111,6 +118,7 @@ class MazeRunner(Robot):
                 break
         if print_data:
             print(self.distance_sensor_data)
+
     # Hier werden die einzelnen Manöver ausgeführt
     def robot_go(self):
         self.leftMotor.setPosition(float('inf'))
@@ -141,6 +149,7 @@ class MazeRunner(Robot):
         elif direction == "left":
             self.leftMotor.setVelocity(self.velocity * turn_strength)
             self.rightMotor.setVelocity(self.velocity)
+
     # Mittels der state Maschiene, wird der roboter in den nächsten Zustand überführt, abhängig vom Momentanen
     # zustand und den Sensor daten
     def robot_decide_next_maneuver(self):
