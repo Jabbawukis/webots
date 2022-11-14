@@ -96,7 +96,7 @@ class MazeRunner(Robot):
         for key in self.distance_sensor_data.keys():
             new_measurement = self.update_sensor_data_value(measure_list=self.distance_sensor_data_iterated[key])
             self.distance_sensor_data[key][0] = new_measurement
-            if len(self.distance_sensor_data_iterated[key]) == 5:
+            if len(self.distance_sensor_data_iterated[key]) == 6:
                 self.distance_sensor_data_iterated[key].pop(0)
         for key in self.distance_sensor_data.keys():
             if "central" in key:
@@ -183,14 +183,14 @@ class MazeRunner(Robot):
                     if "right" in self.furthest_wall_direction:
                         self.robot_turn_right()
                         self.robot_change_state(next_state="turning_right")
-                elif self.distance_sensor_data["outer_left"][0] > self.distance_sensor_data["outer_right"][0]:
+                elif 100 < self.distance_sensor_data["outer_left"][0] > self.distance_sensor_data["outer_right"][0]:
                     if self.robot_previous_state == "turning_left":
                         self.robot_turn_left()
                         self.robot_change_state(next_state="turning_left")
                     else:
                         self.robot_turn_right()
                         self.robot_change_state(next_state="turning_right")
-                elif self.distance_sensor_data["outer_left"][0] < self.distance_sensor_data["outer_right"][0]:
+                elif self.distance_sensor_data["outer_left"][0] < self.distance_sensor_data["outer_right"][0] > 100.0:
                     if self.robot_previous_state == "turning_right":
                         self.robot_turn_right()
                         self.robot_change_state(next_state="turning_right")
@@ -201,6 +201,9 @@ class MazeRunner(Robot):
                         and self.distance_sensor_data["central_right"][0] == 0.0 \
                         and self.distance_sensor_data["outer_left"][0] == 0.0 \
                         and self.distance_sensor_data["outer_right"][0] == 0.0:
+                    self.robot_turn_right()
+                    self.robot_change_state(next_state="turning_right")
+                else:
                     self.robot_turn_right()
                     self.robot_change_state(next_state="turning_right")
             ######
