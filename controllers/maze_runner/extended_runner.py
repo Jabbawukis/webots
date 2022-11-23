@@ -41,7 +41,7 @@ class MazeRunner(Robot):
         self.leftMotor = self.getDevice("motor.left")
         self.rightMotor = self.getDevice("motor.right")
 
-        # Frontal distance sensors that can be use to detect the walls.
+        # Frontal distance sensors that can be use to detect the walls. uses infra-red
         self.outerLeftSensor = self.getDevice("prox.horizontal.0")
         self.centralLeftSensor = self.getDevice("prox.horizontal.1")
         self.centralSensor = self.getDevice("prox.horizontal.2")

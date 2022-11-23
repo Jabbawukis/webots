@@ -1,5 +1,7 @@
-from controller import Robot, TouchSensor, Camera, Motor, PositionSensor, Motion
+import math
 
+from controller import Robot, TouchSensor, Camera, Motor, PositionSensor, Motion
+import numpy as np
 
 class Nao(Robot):
     def __init__(self):
@@ -10,8 +12,15 @@ class Nao(Robot):
         self.camera_top = self.getDevice("CameraTop")
         self.camera_bottom = self.getDevice("CameraBottom")
         self.accelerometer = self.getDevice("accelerometer")
+        # accelerometer:
+        # X;Y;Z [ -0.590, -4.853, -8.693 ]
+        # Z=Erdanziehungskraft
+        # stillstand = [ 0, -0, -9.926 ]
+        # neigung kann dadurch berechnet werden mit atan2(y,x) experiment mit aufprall
+
         self.gyro = self.getDevice("gyro")
         self.imu = self.getDevice("inertial unit")
+        self.gps = self.getDevice("gps")
 
         # TODO add fsr like in webots nao demo
         self.fsr_r = self.getDevice("RFsr")
@@ -154,6 +163,7 @@ class Nao(Robot):
         self.accelerometer.enable(self.timestep)
         self.gyro.enable(self.timestep)
         self.imu.enable(self.timestep)
+        self.gps.enable(self.timestep)
         # TODO enable the rest of the sensors
 
         self.ps_head_yaw.enable(self.timestep)
@@ -198,7 +208,8 @@ class Nao(Robot):
         self.psl_ankle_roll.enable(self.timestep)
 
     def loadMotionFiles(self):
-        self.taiChi = Motion('/home/danielc/PycharmProjects/webots_projects/nao_sensor_world_demo/motions/TaiChi.motion')
+        # self.taiChi = Motion('/home/danielc/PycharmProjects/webots_projects/nao_sensor_world_demo/motions/TaiChi.motion')
+        self.taiChi = Motion('/home/daniel/PycharmProjects/webots_projects/nao_sensor_world_demo/motions/TaiChi.motion')
 
 
     def get_joint_positions(self):
@@ -247,4 +258,12 @@ class Nao(Robot):
 
 nao = Nao()
 while nao.step(nao.timestep) != -1:
+    val = nao.accelerometer.getValues()
+    # print(nao.accelerometer.getValues())
+    accelerationX = val[0]
+    accelerationY = val[1]
+    accelerationZ = val[2]
+    pitch = 180 * np.arctan(accelerationX / np.sqrt(accelerationY * accelerationY + accelerationZ * accelerationZ)) / np.pi
+    roll = 180 * np.arctan(accelerationY / np.sqrt(accelerationX * accelerationX + accelerationZ * accelerationZ)) / np.pi
+    print(f"{pitch}, {roll}")
     nao.taiChi.play()
