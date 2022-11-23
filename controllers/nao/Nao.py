@@ -2,6 +2,8 @@ import math
 
 from controller import Robot, TouchSensor, Camera, Motor, PositionSensor, Motion
 import numpy as np
+import matplotlib.pyplot as plt
+
 
 class Nao(Robot):
     def __init__(self):
@@ -114,7 +116,7 @@ class Nao(Robot):
 
         # init sensors/actuators
         self.enable_sensors()
-        self.loadMotionFiles()
+        self.load_motion_files()
 
     def left(self, x, y, z):
         # x, z
@@ -140,7 +142,7 @@ class Nao(Robot):
         self.r_shoulder_pitch.setPosition(1.60)
         self.l_shoulder_pitch.setPosition(1.60)
 
-    def steady(self, alpha,y,z):
+    def steady(self, alpha, y, z):
         # TODO hocke
         self.l_ankle_pitch.setPosition(-alpha)
         self.r_ankle_pitch.setPosition(-alpha)
@@ -207,10 +209,10 @@ class Nao(Robot):
         self.psl_ankle_pitch.enable(self.timestep)
         self.psl_ankle_roll.enable(self.timestep)
 
-    def loadMotionFiles(self):
-        # self.taiChi = Motion('/home/danielc/PycharmProjects/webots_projects/nao_sensor_world_demo/motions/TaiChi.motion')
-        self.taiChi = Motion('/home/daniel/PycharmProjects/webots_projects/nao_sensor_world_demo/motions/TaiChi.motion')
-
+    def load_motion_files(self):
+        self.taiChi = Motion(
+            '/home/danielc/PycharmProjects/webots_projects/nao_sensor_world_demo/motions/TaiChi.motion')
+        # self.taiChi = Motion('/home/daniel/PycharmProjects/webots_projects/nao_sensor_world_demo/motions/TaiChi.motion')
 
     def get_joint_positions(self):
         return [
@@ -256,14 +258,46 @@ class Nao(Robot):
             self.psl_ankle_roll.getValue()
         ]
 
+
+series_x = []
+series_y = []
+series_z = []
+time_series = []
+pitch_series = []
+roll_series = []
 nao = Nao()
+init_time_step = 0.0
 while nao.step(nao.timestep) != -1:
-    val = nao.accelerometer.getValues()
-    # print(nao.accelerometer.getValues())
-    accelerationX = val[0]
-    accelerationY = val[1]
-    accelerationZ = val[2]
-    pitch = 180 * np.arctan(accelerationX / np.sqrt(accelerationY * accelerationY + accelerationZ * accelerationZ)) / np.pi
-    roll = 180 * np.arctan(accelerationY / np.sqrt(accelerationX * accelerationX + accelerationZ * accelerationZ)) / np.pi
-    print(f"{pitch}, {roll}")
-    nao.taiChi.play()
+    current_time = nao.getTime()
+    if current_time >= init_time_step + 1.0:
+        init_time_step = current_time
+        time_step = nao.getTime()
+        val = nao.accelerometer.getValues()
+        # print(val)
+        accelerationX = val[0]
+        accelerationY = val[1]
+        accelerationZ = val[2]
+
+        series_x.append(accelerationX)
+        series_y.append(accelerationY)
+        series_z.append(accelerationZ)
+        time_series.append(nao.getTime())
+
+        pitch = 180 * np.arctan2(accelerationX,
+                                 np.sqrt(accelerationY * accelerationY + accelerationZ * accelerationZ)) / np.pi
+
+        roll = 180 * np.arctan2(accelerationY,
+                                np.sqrt(accelerationX * accelerationX + accelerationZ * accelerationZ)) / np.pi
+        pitch_series.append(pitch)
+        roll_series.append(roll)
+
+        print(f"{pitch}, {roll}")
+
+        nao.taiChi.play()
+        if time_step >= 32.0:
+            plt.plot(time_series, pitch_series, 'r', label='Pitch')
+            plt.plot(time_series, roll_series, 'g', label='Roll')
+            # plt.plot(time_series, series_z, 'b', label='Z Acceleration')
+            plt.legend()
+            plt.show()
+            break
