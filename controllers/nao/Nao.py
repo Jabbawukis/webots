@@ -294,10 +294,26 @@ while nao.step(nao.timestep) != -1:
         print(f"{pitch}, {roll}")
 
         nao.taiChi.play()
-        if time_step >= 32.0:
-            plt.plot(time_series, pitch_series, 'r', label='Pitch')
-            plt.plot(time_series, roll_series, 'g', label='Roll')
-            # plt.plot(time_series, series_z, 'b', label='Z Acceleration')
-            plt.legend()
-            plt.show()
-            break
+        # if time_step >= 5.0:
+        #     # plt.plot(time_series, series_x, 'r', label='X Acceleration')
+        #     # plt.plot(time_series, series_y, 'g', label='Y Acceleration')
+        #     # plt.plot(time_series, series_z, 'b', label='Z Acceleration')
+        #     # plt.legend()
+        #     # plt.show()
+        #     # # plt.plot(time_series, pitch_series, 'r', label='Pitch')
+        #     # # plt.plot(time_series, roll_series, 'g', label='Roll')
+        #     # # plt.legend()
+        #     # # plt.show()
+        #     # with open('acceleration_x.txt', 'w') as filehandle:
+        #     #     filehandle.write(f'{series_x}\n')
+        #     # with open('acceleration_y.txt', 'w') as filehandle:
+        #     #     filehandle.write(f'{series_y}\n')
+        #     # with open('acceleration_z.txt', 'w') as filehandle:
+        #     #     filehandle.write(f'{series_z}\n')
+        #     # # with open('pitch.txt', 'w') as filehandle:
+        #     # #     filehandle.write(f'{pitch_series}\n')
+        #     # # with open('roll.txt', 'w') as filehandle:
+        #     # #     filehandle.write(f'{roll_series}\n')
+        #     # with open('time_steps_in_sec.txt', 'w') as filehandle:
+        #     #     filehandle.write(f'{time_series}\n')
+        #     break
