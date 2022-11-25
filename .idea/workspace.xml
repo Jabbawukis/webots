@@ -1,24 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7373a2b8-d0a2-4143-b0a8-fc84107e86a5" name="Changes" comment="update">
-      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/other.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/webots_projects.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bb_8_gyro_world_demo/plugins/robot_windows/humanoid_marathon/humanoid_marathon.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bb_8_gyro_world_demo/plugins/robot_windows/humanoid_marathon/humanoid_marathon.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bb_8_gyro_world_demo/worlds/.humanoid_marathon.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bb_8_gyro_world_demo/worlds/.humanoid_marathon.wbproj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bb_8_gyro_world_demo/worlds/humanoid_marathon.wbt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/controllers/bb_8/bb_8.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/nao_sensor_world_demo/wolrds_chair/nao_room.wbt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/nao/Nao.py" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/nao/Nao.py" afterDir="false" />
-    </list>
+    <list default="true" id="7373a2b8-d0a2-4143-b0a8-fc84107e86a5" name="Changes" comment="update" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -47,11 +30,14 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "/home/danielc/PycharmProjects/kognitive_robotik_aufgabe2/bb_8_gyro_sensor_data/gyro_drive_down_ramp/gyro_example_plots",
+    "last_opened_file_path": "/home/danielc/PycharmProjects/webots_projects",
     "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
 }]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/bb_8_gyro_world_demo" />
       <recent name="$PROJECT_DIR$/controllers/bb_8" />
@@ -218,7 +204,7 @@
       <workItem from="1669226542307" duration="2793000" />
       <workItem from="1669229503598" duration="3160000" />
       <workItem from="1669233018052" duration="52000" />
-      <workItem from="1669374462157" duration="7112000" />
+      <workItem from="1669374462157" duration="7433000" />
     </task>
     <task id="LOCAL-00001" summary="make extended controller more robust">
       <created>1668439267083</created>
@@ -255,7 +241,49 @@
       <option name="project" value="LOCAL" />
       <updated>1669233063460</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="update">
+      <created>1669381655691</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1669381655691</updated>
+    </task>
+    <task id="LOCAL-00007" summary="update">
+      <created>1669381743102</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1669381743102</updated>
+    </task>
+    <task id="LOCAL-00008" summary="update">
+      <created>1669381752101</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1669381752101</updated>
+    </task>
+    <task id="LOCAL-00009" summary="update">
+      <created>1669381778274</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1669381778274</updated>
+    </task>
+    <task id="LOCAL-00010" summary="update">
+      <created>1669381823402</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1669381823402</updated>
+    </task>
+    <task id="LOCAL-00011" summary="update">
+      <created>1669381862767</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1669381862767</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
