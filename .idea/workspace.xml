@@ -58,7 +58,7 @@
       <recent name="$PROJECT_DIR$/sensor_plots" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.Nao">
+  <component name="RunManager" selected="Python.bb_8">
     <configuration name="Nao" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="webots_projects" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -190,8 +190,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.Nao" />
         <item itemvalue="Python.bb_8" />
+        <item itemvalue="Python.Nao" />
         <item itemvalue="Python.nao_demo" />
         <item itemvalue="Python.extended_runner" />
         <item itemvalue="Python.simple_runner" />
