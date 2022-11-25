@@ -35,6 +35,7 @@ class BB_8(Robot):
         self.max_speed = 4.0
         self.attenuation = 0.9
 
+
 series_x = []
 series_y = []
 series_z = []
@@ -64,7 +65,6 @@ while bb_8.step(bb_8.timeStep) != -1:
             filehandle.write(f'{time_series}\n')
         break
 
-
     bb_8.pitch_speed += bb_8.attenuation
     bb_8.yaw_speed = min(bb_8.max_speed, max(-bb_8.max_speed, bb_8.attenuation * bb_8.pitch_speed))
     bb_8.pitch_speed = min(bb_8.max_speed, max(-bb_8.max_speed, bb_8.attenuation * bb_8.yaw_speed))
@@ -75,6 +75,3 @@ while bb_8.step(bb_8.timeStep) != -1:
     bb_8.body_yaw_motor.setVelocity(bb_8.yaw_speed)
     bb_8.body_pitch_motor.setVelocity(bb_8.pitch_speed)
     bb_8.head_yaw_motor.setVelocity(bb_8.yaw_speed)
-
-
-
