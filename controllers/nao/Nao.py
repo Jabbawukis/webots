@@ -271,7 +271,6 @@ while nao.step(nao.timestep) != -1:
     current_time = nao.getTime()
     if current_time >= init_time_step + 1.0:
         init_time_step = current_time
-        time_step = nao.getTime()
         val = nao.accelerometer.getValues()
         # print(val)
         accelerationX = val[0]
@@ -281,7 +280,7 @@ while nao.step(nao.timestep) != -1:
         series_x.append(accelerationX)
         series_y.append(accelerationY)
         series_z.append(accelerationZ)
-        time_series.append(nao.getTime())
+        time_series.append(current_time)
 
         pitch = 180 * np.arctan2(accelerationX,
                                  np.sqrt(accelerationY * accelerationY + accelerationZ * accelerationZ)) / np.pi
@@ -294,7 +293,7 @@ while nao.step(nao.timestep) != -1:
         print(f"{pitch}, {roll}")
 
         nao.taiChi.play()
-        if time_step >= 30.0:
+        if current_time >= 35.0:
             plt.plot(time_series, series_x, 'r', label='X Acceleration')
             plt.plot(time_series, series_y, 'g', label='Y Acceleration')
             plt.plot(time_series, series_z, 'b', label='Z Acceleration')
