@@ -6,6 +6,5 @@ maximizedDockId: -1
 centralWidgetVisible: 1
 orthographicViewHeight: 1
 textFiles: 0 "../../../../../snap/webots/22/usr/share/webots/projects/robots/sphero/bb8/controllers/bb-8/bb-8.c"
-robotWindow: BB-8
 consoles: Console:All:All
 renderingDevicePerspectives: BB-8:camera;1;1;0;0
