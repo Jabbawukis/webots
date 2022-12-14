@@ -1,10 +1,9 @@
-import atexit
-
-from controller import Robot, Supervisor
+from controller import Robot, Supervisor, Keyboard
 import numpy as np
 from pathlib import Path
 import os
 import pickle
+import signal
 
 class Panda(Supervisor):
     def __init__(self):
@@ -22,6 +21,9 @@ class Panda(Supervisor):
 
         for joint in self.finger_joints:
             joint.setVelocity(0.2)
+
+        self.keyboard = self.getKeyboard()
+        self.keyboard.enable(10 * self.timeStep)
 
         self.panda_joint1 = self.getDevice("panda_joint1")
         self.panda_joint2 = self.getDevice("panda_joint2")
@@ -73,7 +75,7 @@ class Panda(Supervisor):
             with path.open("rb") as f:
                 string = pickle.load(f)
                 self.joint_grip_pos_set = set(string)
-                print(self.joint_grip_pos_set)
+                print(f"loaded set: {len(self.joint_grip_pos_set)}")
         else:
             self.joint_grip_pos_set = set()
 
@@ -110,6 +112,8 @@ class Panda(Supervisor):
             print(f"adding {tuple(temp)}")
             self.joint_grip_pos_set.add(tuple(temp))
 
+    def sigint_handler(self, signum, frame):
+        self.save_to_file()
 
 
 panda = Panda()
@@ -118,12 +122,9 @@ box = panda.getFromDef('BOX')
 panda.open_fingers()
 grasp = [0.0, 0.520, 0.0, -2.370, -1.600, 2.730, 0.790]
 panda.move_arm(grasp)
+signal.signal(signal.SIGINT, panda.sigint_handler)
 while panda.step(panda.timeStep) != -1:
     box_vec = np.array(box.getPosition())
     gripper_vec = np.array(gripper.getPosition())
     if np.linalg.norm(box_vec - gripper_vec) < 0.12:
         panda.save_rotation()
-    current_time = panda.getTime()
-    if current_time >= 500.0:
-        panda.save_to_file()
-
