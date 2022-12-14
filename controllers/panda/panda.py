@@ -107,9 +107,8 @@ class Panda(Supervisor):
         for sensor in self.joint_sensors:
             temp.append(float("{:.2f}".format(sensor.getValue())))
         if tuple(temp) not in self.joint_grip_pos_set:
-            # print(tuple(temp))
+            print(f"adding {tuple(temp)}")
             self.joint_grip_pos_set.add(tuple(temp))
-            print(self.joint_grip_pos_set)
 
 
 
@@ -125,6 +124,6 @@ while panda.step(panda.timeStep) != -1:
     if np.linalg.norm(box_vec - gripper_vec) < 0.12:
         panda.save_rotation()
     current_time = panda.getTime()
-    if current_time >= 10.0:
+    if current_time >= 500.0:
         panda.save_to_file()
 
