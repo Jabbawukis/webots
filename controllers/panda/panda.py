@@ -9,9 +9,9 @@ class Panda(Supervisor):
     def __init__(self):
         super().__init__()
         self.timeStep = int(self.getBasicTimeStep())
-        self.persistent_cache_path = Path(os.getcwd()).joinpath("cache")
+        self.persistent_cache_path = Path(os.getcwd()).joinpath("joint_position_training_data")
         self.persistent_cache_path.mkdir(parents=True, exist_ok=True)
-        self.event_pickle_filename = "events.p"
+        self.event_pickle_filename = "training_data.p"
 
         self.panda_finger_joint1 = self.getDevice("panda_finger_joint1")
         self.panda_finger_joint2 = self.getDevice("panda_finger_joint2")
