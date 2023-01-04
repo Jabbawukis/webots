@@ -37,12 +37,12 @@ print(bn.dtype)
 
 # elementweise Multiplikation
 cn = bn * bn
-print(f"elementweise Multiplikation \n {cn}")
+print(f"elementweise Multiplikation {cn}")
 
 # Matrix-Multiplikation
 # dn = bn.dot(bn)
 dn = bn @ bn
-print(f"Matrix-Multiplikation \n {dn}")
+print(f"Matrix-Multiplikation {dn}")
 
 # Matrix-Vektor Multiplikation
 en = bn @ an
@@ -69,7 +69,7 @@ print(bn[0:3:2, 0:3:2])
 
 # Zeilen vertauschen
 # [erstes, nulltes, erstes] -element
-print(f"from \n {bn} \n to \n {bn[[1, 0, 1], :]}")
+print(f"from {bn}  to  {bn[[1, 0, 1], :]}")
 
 # Einheitsmatrix
 print(np.eye(3))
