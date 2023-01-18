@@ -23,6 +23,15 @@ class Nao(Robot):
         self.head_yaw = self.getDevice("HeadYaw")
         self.head_pitch = self.getDevice("HeadPitch")
 
+        self.maxMotorVelocity = 6
+
+        self.velocity = 0.7 * self.maxMotorVelocity
+
+        self.head_yaw.setVelocity(0.3)
+        self.head_pitch.setVelocity(0.3)
+
+        self.angle = 0.0
+
         # move arms down
         self.lShoulderPitch = self.getDevice("LShoulderPitch")
         self.rShoulderPitch = self.getDevice("RShoulderPitch")
@@ -79,6 +88,9 @@ class Nao(Robot):
             angle = 360 - abs(angle)
         return angle, distance
 
+    def scaling_factor(self, angle_delta):
+        return 1 / (1 + math.exp(-angle_delta))
+
 
 nao = Nao()
 while nao.step(nao.timestep) != -1:
@@ -86,7 +98,7 @@ while nao.step(nao.timestep) != -1:
     img = nao.get_image()
     mask = nao.get_color_mask_and_morphological_of_image(img)
     centers = nao.detect_center_of_objects(mask)
-    print(centers)
+    # print(centers)
     try:
         cX = centers[0][0]
         cY = centers[0][1]
@@ -95,18 +107,27 @@ while nao.step(nao.timestep) != -1:
         target_head_pitch = math.radians(10) * math.cos(current_time)
         nao.head_yaw.setPosition(target_head_yaw)
         nao.head_pitch.setPosition(target_head_pitch)
+        cv2.imshow('image', img)
+        cv2.waitKey(1)
         continue
 
     angle, distance = nao.get_object_angle_from_distance(mask, cX, cY)
+    if nao.angle == 0.0:
+        nao.angle = angle
+
+    angle_delta = abs(angle - nao.angle)
+    scaling = nao.scaling_factor(angle_delta)
+
+    nao.angle = angle
+
+
     print(f"Angle: {angle}")
     print(f"Distance: {distance}")
     cv2.imshow('image', img)
     cv2.waitKey(1)
 
-
-    target_head_yaw = math.radians(100) * math.sin(math.radians(angle))
-    target_head_pitch = math.radians(10) * math.cos(math.radians(angle))
-    print(f"Current {math.degrees(nao.ps_head_yaw.getValue())} {math.degrees(nao.ps_head_pitch.getValue())}")
+    target_head_yaw = math.radians(100) * math.sin(math.radians(angle * scaling))
+    target_head_pitch = math.radians(10) * math.cos(math.radians(angle * scaling))
 
     # set joints
     nao.head_yaw.setPosition(target_head_yaw)
