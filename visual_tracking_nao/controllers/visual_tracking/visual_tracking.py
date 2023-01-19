@@ -23,14 +23,16 @@ class Nao(Robot):
         self.head_yaw = self.getDevice("HeadYaw")
         self.head_pitch = self.getDevice("HeadPitch")
 
-        self.maxMotorVelocity = 6
-
-        self.velocity = 0.7 * self.maxMotorVelocity
-
-        self.head_yaw.setVelocity(0.3)
-        self.head_pitch.setVelocity(0.3)
+        self.velocity = 0.3
 
         self.angle = 0.0
+        self.distance = 0.0
+
+        self.head_yaw.setVelocity(self.velocity)
+        self.head_pitch.setVelocity(self.velocity)
+
+        self.state = "no_object_detected"
+        self.previous_state = ""
 
         # move arms down
         self.lShoulderPitch = self.getDevice("LShoulderPitch")
@@ -38,11 +40,16 @@ class Nao(Robot):
         self.lShoulderPitch.setPosition(math.radians(90))
         self.rShoulderPitch.setPosition(math.radians(90))
 
+    def set_velocity(self, velocity):
+        self.head_yaw.setVelocity(velocity)
+        self.head_pitch.setVelocity(velocity)
+
     def get_image(self):
         img = self.camera_top.getImage()
         img = np.frombuffer(img, dtype=np.uint8)
         img = img.reshape((self.height, self.width, 4))
         img = img[:, :, [0, 1, 2]]  # last channel not needed
+        img = cv2.medianBlur(img, 5)
         return img
 
     def get_color_mask_and_morphological_of_image(self, image, colour="yellow"):
@@ -98,37 +105,38 @@ while nao.step(nao.timestep) != -1:
     img = nao.get_image()
     mask = nao.get_color_mask_and_morphological_of_image(img)
     centers = nao.detect_center_of_objects(mask)
-    # print(centers)
-    try:
-        cX = centers[0][0]
-        cY = centers[0][1]
-    except IndexError:
+    cv2.imshow('image', mask)
+    cv2.waitKey(1)
+    nao.previous_state = nao.state
+    if len(centers) == 0:
+        nao.state = "no_object_detected"
+    else:
+        nao.state = "object_detected"
+
+    if nao.state == "no_object_detected":
+        if nao.previous_state == "object_detected":
+            nao.set_velocity(0.3)
+            target_head_yaw = math.radians(100) * math.sin(nao.angle)
+            target_head_pitch = math.radians(10) * math.cos(nao.angle)
+            continue
+        nao.set_velocity(6)
         target_head_yaw = math.radians(100) * math.sin(current_time)
         target_head_pitch = math.radians(10) * math.cos(current_time)
         nao.head_yaw.setPosition(target_head_yaw)
         nao.head_pitch.setPosition(target_head_pitch)
-        cv2.imshow('image', img)
-        cv2.waitKey(1)
         continue
-
-    angle, distance = nao.get_object_angle_from_distance(mask, cX, cY)
-    if nao.angle == 0.0:
-        nao.angle = angle
-
-    angle_delta = abs(angle - nao.angle)
-    scaling = nao.scaling_factor(angle_delta)
-
-    nao.angle = angle
-
-
-    print(f"Angle: {angle}")
-    print(f"Distance: {distance}")
-    cv2.imshow('image', img)
-    cv2.waitKey(1)
-
-    target_head_yaw = math.radians(100) * math.sin(math.radians(angle * scaling))
-    target_head_pitch = math.radians(10) * math.cos(math.radians(angle * scaling))
-
-    # set joints
-    nao.head_yaw.setPosition(target_head_yaw)
-    nao.head_pitch.setPosition(target_head_pitch)
+    if nao.state == "object_detected":
+        cX = centers[0][0]
+        cY = centers[0][1]
+        nao.set_velocity(0.3)
+        nao.angle, nao.distance = nao.get_object_angle_from_distance(mask, cX, cY)
+        # print(f"Angle: {nao.angle}")
+        # print(f"Distance: {nao.distance}")
+        if nao.distance < 30.0:
+            nao.set_velocity(0.0)
+            continue
+        target_head_yaw = math.radians(100) * math.sin(math.radians(nao.angle))
+        target_head_pitch = math.radians(10) * math.cos(math.radians(nao.angle))
+        # set joints
+        nao.head_yaw.setPosition(target_head_yaw)
+        nao.head_pitch.setPosition(target_head_pitch)
