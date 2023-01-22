@@ -71,15 +71,32 @@ class Nao(Robot):
         for c in contours:
             rect = cv2.boundingRect(c)
             x, y, w, h = rect
-            cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 1)
-            M = cv2.moments(c)
-            a = M["m00"]
-            if a > 0:
-                # calculate the center of mass (COM)
-                cX = int(M["m10"] / a)  # average x-coordinate
-                cY = int(M["m01"] / a)  # average y-coordinate
-                cv2.circle(img, (cX, cY), 7, (255, 0, 0), -1)
-                centers.append((cX, cY))
+            # print(w/h)
+            if len(contours) > 1:
+                if w/h > 0.60:
+                    cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 1)
+                    M = cv2.moments(c)
+                    a = M["m00"]
+                    if a > 0:
+                        # calculate the center of mass (COM)
+                        cX = int(M["m10"] / a)  # average x-coordinate
+                        cY = int(M["m01"] / a)  # average y-coordinate
+                        cv2.circle(img, (cX, cY), 7, (255, 0, 0), -1)
+                        centers.append((cX, cY))
+                    else:
+                        centers.append((0, 0))
+            else:
+                cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 1)
+                M = cv2.moments(c)
+                a = M["m00"]
+                if a > 0:
+                    # calculate the center of mass (COM)
+                    cX = int(M["m10"] / a)  # average x-coordinate
+                    cY = int(M["m01"] / a)  # average y-coordinate
+                    cv2.circle(img, (cX, cY), 7, (255, 0, 0), -1)
+                    centers.append((cX, cY))
+                else:
+                    centers.append((0, 0))
         return centers
 
     def get_object_angle_from_distance(self, img, x, y):
@@ -94,9 +111,6 @@ class Nao(Robot):
         if angle < 0:
             angle = 360 - abs(angle)
         return angle, distance
-
-    def scaling_factor(self, angle_delta):
-        return 1 / (1 + math.exp(-angle_delta))
 
 
 nao = Nao()
@@ -130,8 +144,6 @@ while nao.step(nao.timestep) != -1:
         cY = centers[0][1]
         nao.set_velocity(0.3)
         nao.angle, nao.distance = nao.get_object_angle_from_distance(mask, cX, cY)
-        # print(f"Angle: {nao.angle}")
-        # print(f"Distance: {nao.distance}")
         if nao.distance < 30.0:
             nao.set_velocity(0.0)
             continue
