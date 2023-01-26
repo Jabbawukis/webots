@@ -168,9 +168,13 @@ while nao.step(nao.timestep) != -1:
 
     if nao.state == "no_object_detected":
         nao.set_velocity(0.3)
-        target_head_yaw = math.radians(100) * math.sin(nao.angle)
-        target_head_pitch = math.radians(10) * math.cos(nao.angle)
-        continue
+        nao.target_head_yaw = math.radians(100) * math.cos(math.radians(nao.angle)) * (-1)
+        nao.target_head_pitch = math.radians(10) * math.sin(math.radians(nao.angle))
+
+        # Set joints
+        nao.head_yaw.setPosition(nao.target_head_yaw)
+        nao.head_pitch.setPosition(nao.target_head_pitch)
+
     if nao.state == "object_detected":
         # Select centroid to be tracked
         c_index = nao.select_object(len(contours), rects)
@@ -209,5 +213,4 @@ while nao.step(nao.timestep) != -1:
     cv2.imshow('Ausgewertete Ansicht (Oben)', blob)
     cv2.waitKey(1)
     #####################
-
 
