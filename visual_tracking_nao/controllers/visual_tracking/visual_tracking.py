@@ -15,11 +15,6 @@ class Nao(Robot):
         self.width_top = self.camera_top.getWidth()
         self.height_top = self.camera_top.getHeight()
 
-        # self.camera_bottom = self.getDevice("CameraBottom")
-        # self.camera_bottom.enable(self.timestep)
-        # self.width_bottom = self.camera_bottom.getWidth()
-        # self.height_bottom = self.camera_bottom.getHeight()
-
         self.ps_head_yaw = self.getDevice("HeadYawS")
         self.ps_head_pitch = self.getDevice("HeadPitchS")
         self.ps_head_yaw.enable(self.timestep)
